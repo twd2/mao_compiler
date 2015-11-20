@@ -1,5 +1,5 @@
 #include "memory.h"
-//#include "expression.h"
+#include "expression.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
@@ -15,5 +15,6 @@ int main(int argc, char *argv[]) {
 	fprintf(stderr, "%s\n", as);
 	res = calculate(as);
 	fprintf(stderr, "%lf\n", res);
+	fprintf(stderr, "%lf\n", calculate(as));
 	return 0;
 }
