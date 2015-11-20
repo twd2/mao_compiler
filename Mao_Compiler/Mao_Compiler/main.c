@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
-	char as[200] = "i123*2+1*61";
+	char as[200] = "i123 *  2.5  + 1 *  61";
 	double res;
 
 	add_int_variable("i123", 1);
@@ -15,6 +15,5 @@ int main(int argc, char *argv[]) {
 	fprintf(stderr, "%s\n", as);
 	res = calculate(as);
 	fprintf(stderr, "%lf\n", res);
-	fprintf(stderr, "%lf\n", calculate(as));
 	return 0;
 }

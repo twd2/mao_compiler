@@ -165,7 +165,7 @@ void pharse(char *exp) {
 				string_insert(exp, "0", i);
 			}
 		}
-		if (is_number(exp[i]) || isalpha(exp[i])) {
+		if (is_number(exp[i]) || isalpha(exp[i]) || exp[i] == '.') {
 			if (!number_var_started) {
 				number_var_started = true;
 			}
@@ -211,7 +211,7 @@ void convert(char *exp) {
 				stack_ops_top--;
 			}
 		}
-		else if (is_number(exp[i]) || isalpha(exp[i])) {
+		else if (is_number(exp[i]) || isalpha(exp[i]) || exp[i] == '.') {
 			char exp_str[2];
 			exp_str[0] = exp[i];
 			exp_str[1] = '\0';
@@ -281,7 +281,7 @@ double calculate(char *exp) {
 			else if (number_started) {
 				_variable var;
 				char *end;
-				if (strchr(temp_string, ".")) {
+				if (strchr(temp_string, '.')) {
 					double value = strtod(temp_string, &end, 10);
 					var = create_double_variable(value);
 				}
@@ -295,6 +295,5 @@ double calculate(char *exp) {
 		}
 	}
 	result = get_value(stack_cal_ovs[stack_cal_ovs_top]);
-	printf("%lf\n", result);
 	return result;
 }
