@@ -25,17 +25,6 @@ typedef struct _memory {
 	struct _memory *p_next;
 } _memory;
 
-<<<<<<< HEAD
-// Function to get error information
-int get_last_error(void);
-
-// Function to add a int variable
-extern void add_int_variable(_name_string _name, int _value);
-
-// Function to add a double variable
-extern void add_double_variable(_name_string _name, double _value);
-=======
-
 // create a memory
 _memory *create_memory();
 
@@ -47,7 +36,6 @@ void add_int_variable(_memory *p_head, _name_string _name, int _value);
 
 // Funtion to add a double variable
 void add_double_variable(_memory *p_head, _name_string _name, double _value);
->>>>>>> f299c32b08cc1344d9d24c6dba3e7d63b06648af
 
 // Function to add a new node
 void add_node(_memory *p_head, _memory *_p_node);

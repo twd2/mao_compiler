@@ -239,11 +239,7 @@ void convert(char *exp) {
 	return;
 }
 
-<<<<<<< .merge_file_kDsSbs
-double calculate(char *exp) {
-=======
 _variable calculate(_memory *mem, char *exp) {
->>>>>>> .merge_file_PCqmGx
 
 	double result = 0;
 	int length = strlen(exp);
@@ -288,11 +284,7 @@ _variable calculate(_memory *mem, char *exp) {
 			temp_string[iterator++] = '\0';
 			iterator = 0;
 			if (var_started) {
-<<<<<<< .merge_file_kDsSbs
-				_variable var = get_variable_by_name(temp_string);
-=======
 				_variable var = get_variable_by_name(mem, temp_string);
->>>>>>> .merge_file_PCqmGx
 				stack_cal_ovs[++stack_cal_ovs_top] = var;
 				var_started = false;
 			}
@@ -312,12 +304,8 @@ _variable calculate(_memory *mem, char *exp) {
 			}
 		}
 	}
-<<<<<<< .merge_file_kDsSbs
-	result = get_value(stack_cal_ovs[stack_cal_ovs_top]);
-=======
 	_variable result;
 	result.type = DOUBLE;
 	result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
->>>>>>> .merge_file_PCqmGx
 	return result;
 }
