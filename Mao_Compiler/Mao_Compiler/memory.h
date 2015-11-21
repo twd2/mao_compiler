@@ -3,11 +3,12 @@
 #ifndef _MEMORY_H
 #define _MEMORY_H
 
-#define NO_ERROR      0x00
-#define MATCH_ERROR   0x01
-#define MALLOC_ERROR  0x02
-#define MEMORY_EMPTY  0x03
-#define LOGIC_ERROR   0x04
+#define NO_ERROR        0x00
+#define MATCH_ERROR     0x01
+#define MALLOC_ERROR    0x02
+#define MEMORY_EMPTY    0x03
+#define LOGIC_ERROR     0x04
+#define DIVIDED_BY_ZERO 0x05
 
 typedef enum { INT, DOUBLE } _type;
 typedef char _name_string[25];
