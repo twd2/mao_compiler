@@ -25,13 +25,13 @@ typedef struct _memory {
 	struct _memory *p_next;
 } _memory;
 
-// Funtion to get error information
+// Function to get error information
 int get_last_error(void);
 
-// Funtion to add a int variable
+// Function to add a int variable
 extern void add_int_variable(_name_string _name, int _value);
 
-// Funtion to add a double variable
+// Function to add a double variable
 extern void add_double_variable(_name_string _name, double _value);
 
 // Function to add a new node
