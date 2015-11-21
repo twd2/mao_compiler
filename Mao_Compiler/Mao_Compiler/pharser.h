@@ -4,6 +4,6 @@
 #define PHARSER_H
 
 // Function to pharse a statement
-extern void pharser(const char *statement);
+void pharser(const char *statement);
 
 #endif

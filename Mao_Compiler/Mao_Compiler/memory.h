@@ -10,7 +10,7 @@
 #define LOGIC_ERROR     0x04
 #define DIVIDED_BY_ZERO 0x05
 
-typedef enum { INT, DOUBLE } _type;
+typedef enum { INT, DOUBLE, ERRORVALUE } _type;
 typedef char _name_string[25];
 
 typedef struct _variable {
@@ -25,31 +25,35 @@ typedef struct _memory {
 	struct _memory *p_next;
 } _memory;
 
+
+// create a memory
+_memory *create_memory();
+
 // Funtion to get error information
 int get_last_error(void);
 
 // Funtion to add a int variable
-extern void add_int_variable(_name_string _name, int _value);
+void add_int_variable(_memory *p_head, _name_string _name, int _value);
 
 // Funtion to add a double variable
-extern void add_double_variable(_name_string _name, double _value);
+void add_double_variable(_memory *p_head, _name_string _name, double _value);
 
 // Function to add a new node
-extern void add_node(_memory *_p_node);
+void add_node(_memory *p_head, _memory *_p_node);
 
 // Function to get a variable given by name
-extern _variable get_variable_by_name(_name_string _name);
+_variable get_variable_by_name(_memory *p_head, _name_string _name);
 
 // Function to find type by specific name
-extern _type get_type_by_name(_name_string _name);
+_type get_type_by_name(_memory *p_head, _name_string _name);
 
 // Function to get int value by specific name
-extern int get_int_value_by_name(_name_string _name);
+int get_int_value_by_name(_memory *p_head, _name_string _name);
 
 // Function to get double value by specific name
-extern double get_double_value_by_name(_name_string _name);
+double get_double_value_by_name(_memory *p_head, _name_string _name);
 
 // Function for variable assignment
-extern void assign_variable(_variable *_destination, const _variable *_source);
+void assign_variable(_variable *_destination, const _variable *_source);
 
 #endif
