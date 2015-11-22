@@ -241,7 +241,6 @@ void convert(char *exp) {
 
 _variable calculate(_memory *mem, char *exp) {
 
-	double result = 0;
 	int length = strlen(exp);
 	bool number_started = false;
 	bool var_started = false;
@@ -254,8 +253,7 @@ _variable calculate(_memory *mem, char *exp) {
 			_variable b = stack_cal_ovs[stack_cal_ovs_top];
 			stack_cal_ovs_top--;
 			stack_cal_ovs[stack_cal_ovs_top] = simple_calculate(exp[i], a, b);
-			if (stack_cal_ovs[stack_cal_ovs_top].type == ERRORVALUE)
-			{
+			if (stack_cal_ovs[stack_cal_ovs_top].type == ERRORVALUE) {
 				return stack_cal_ovs[stack_cal_ovs_top];
 			}
 		}

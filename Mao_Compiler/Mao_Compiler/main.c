@@ -2,7 +2,6 @@
 #include "utility.h"
 #include "expression.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(int argc, char *argv[]) {
 	char as[200] = "a/b + pl+(4*m*g)/(pi*d*d)";
@@ -30,15 +29,12 @@ int main(int argc, char *argv[]) {
 	fprintf(stderr, "%s\n", as);
 	res = calculate(mem, as);
 
-	if (res.type == ERRORVALUE)
-	{
+	if (res.type == ERRORVALUE) {
 		fprintf(stderr, "error: %d\n", res.int_value);
 	}
-	else
-	{
+	else {
 		fprintf(stderr, "%lf\n", res.double_value);
 	}
 
-	system("pause");
 	return 0;
 }
