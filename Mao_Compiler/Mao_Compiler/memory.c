@@ -9,7 +9,7 @@
 
 unsigned int error = NO_ERROR;
 
-_memory *create_memory() {
+_memory *create_memory(void) {
 	_memory *p_node = (_memory *)malloc(sizeof(_memory));
 
 	if (p_node) {
@@ -29,7 +29,7 @@ void add_node(_memory *p_head, _memory *_p_node) {
 	_memory *p_current = p_head;
 
 	if (!p_head) {
-		// If p_head is NULL
+		// If _p_head is NULL
 		p_head = _p_node;
 		_p_node->p_next = NULL;
 	}

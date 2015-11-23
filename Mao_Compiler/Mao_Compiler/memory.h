@@ -25,9 +25,8 @@ typedef struct _memory {
 	struct _memory *p_next;
 } _memory;
 
-
-// create a memory
-_memory *create_memory();
+// Function to create a memory
+_memory *create_memory(void);
 
 // Funtion to get error information
 int get_last_error(void);

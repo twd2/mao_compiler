@@ -147,12 +147,14 @@
     <ClCompile Include="memory.c" />
     <ClCompile Include="pharser.c" />
     <ClCompile Include="utility.c" />
+    <ClCompile Include="vector.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="expression.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="pharser.h" />
     <ClInclude Include="utility.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
