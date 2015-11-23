@@ -78,35 +78,59 @@ void add_double_variable(_memory *p_head, _name_string _name, double _value) {
 	return;
 }
 
-_variable get_variable_by_name(_memory *p_head, _name_string _name) {
+void set_variable(_memory *p_head, _name_string _name, _variable _var) {
+	_variable *des = get_variable_by_name(p_head, _name);
+	des->type = _var.type;
+	des->int_value = _var.int_value;
+	des->double_value = _var.double_value;
+	return;
+}
+
+_variable *get_variable_by_name(_memory *p_head, _name_string _name) {
 	_memory *p_current = p_head;
-	_variable var_null = {INT, 0, 0};
 	if (!p_current) {
 		error = MEMORY_EMPTY;
-		return var_null;
+		return NULL;
 	}
 	else {
 		while (p_current) {
 			if (!strcmp(p_current->name, _name)) {
-				return p_current->variable;
+				return &(p_current->variable);
 			}
 			p_current = p_current->p_next;
 		}
 	}
 	error = MATCH_ERROR;
-	return var_null;
+	return NULL;
+}
+
+void print_variable(_variable var) {
+	switch (var.type)
+	{
+	case INT:
+		printf("%d\n", var.int_value);
+		break;
+	case DOUBLE:
+		printf("%lf\n", var.double_value);
+		break;
+	case ERRORVALUE:
+		printf("divided by ZERO\n");
+		exit(1);
+		break;
+	}
+	return;
 }
 
 _type get_type_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).type;
+	return (*get_variable_by_name(p_head, _name)).type;
 }
 
 int get_int_value_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).int_value;
+	return (*get_variable_by_name(p_head, _name)).int_value;
 }
 
 double get_double_value_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).double_value;
+	return (*get_variable_by_name(p_head, _name)).double_value;
 }
 
 void assign_variable(_variable *_destination, const _variable *_source) {

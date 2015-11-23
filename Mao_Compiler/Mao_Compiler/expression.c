@@ -246,6 +246,7 @@ _variable calculate(_memory *mem, char *exp) {
 	bool var_started = false;
 	char temp_string[2005];
 	int iterator = 0;
+	stack_cal_ovs_top = -1;
 
 	for (int i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
@@ -282,7 +283,7 @@ _variable calculate(_memory *mem, char *exp) {
 			temp_string[iterator++] = '\0';
 			iterator = 0;
 			if (var_started) {
-				_variable var = get_variable_by_name(mem, temp_string);
+				_variable var = *get_variable_by_name(mem, temp_string);
 				stack_cal_ovs[++stack_cal_ovs_top] = var;
 				var_started = false;
 			}
@@ -290,7 +291,7 @@ _variable calculate(_memory *mem, char *exp) {
 				_variable var;
 				char *end;
 				if (strchr(temp_string, '.')) {
-					double value = strtod(temp_string, &end, 10);
+					double value = strtod(temp_string, &end);
 					var = create_double_variable(value);
 				}
 				else {

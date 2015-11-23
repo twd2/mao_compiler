@@ -35,13 +35,19 @@ int main(int argc, char *argv[]) {
 	else {
 		fprintf(stderr, "%lf\n", res.double_value);
 	}*/
-
-	pharser(mem, "double a1, b1, c1, d1;");
-	char another[200] = "a1+b1+c1+d1";
-	pharse(another);
-	convert(another);
-	res = calculate(mem, another);
-	fprintf(stderr, "another = %lf\n", res.double_value);
-
+	
+	pharser(mem, "int a;");
+	pharser(mem, "double x, y;");
+	pharser(mem, "int b, c, d;");
+	pharser(mem, "a = 5.5;");
+	
+	pharser(mem, "x = y = (1 + a)*6.44;");
+	pharser(mem, "a + 4;");
+	pharser(mem, "a = a / 2;");
+	pharser(mem, "print(a);");
+	pharser(mem, "y = (c + 6)*-(1 + 1);");
+	pharser(mem, "print(y);");
+	pharser(mem, "d = a / (2 / 5);");
+	pharser(mem, "print(d);");
 	return 0;
 }
