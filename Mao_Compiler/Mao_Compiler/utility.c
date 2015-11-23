@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void string_append(char* _des, const char* _src) {
+void string_append(char *_des, const char *_src) {
 	int len_destination = strlen(_des);
 	int len_source = strlen(_src);
 	for (int i = len_destination; i <= len_destination + len_source; ++i) {
@@ -14,7 +14,7 @@ void string_append(char* _des, const char* _src) {
 	return;
 }
 
-void string_insert(char* _des, const char* _src, const unsigned int _pos) {
+void string_insert(char *_des, const char *_src, const unsigned int _pos) {
 	int len_destination = strlen(_des);
 	int len_source = strlen(_src);
 	for (int i = len_destination - 1; i >= _pos; --i) {
@@ -62,7 +62,7 @@ char *string_purify(const char *str) {
 	return result;
 }
 
-int string_startswith(char* _str, const char* _x)
+int string_startswith(char *_str, const char *_x)
 {
 	int lenstr = strlen(_str), lenx = strlen(_x);
 	if (lenstr < lenx) return false;
