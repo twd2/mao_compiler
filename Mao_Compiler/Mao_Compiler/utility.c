@@ -1,5 +1,7 @@
 #include "utility.h"
 #include "vector.h"
+#include "expression.h"
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,4 +49,15 @@ int string_split(_vector *vec, const char *src, const char delim) {
 		}
 	}
 	return count;
+}
+
+char *string_purify(const char *str) {
+	int len = strlen(str);
+	char *result = (char *)malloc((len + 1) * sizeof(char));
+	for (int i = 0, j = 0; i <= len; ++i) {
+		if (isalpha(str[i]) || is_number(str[i]) || str[i] == '\0') {
+			result[j++] = str[i];
+		}
+	}
+	return result;
 }

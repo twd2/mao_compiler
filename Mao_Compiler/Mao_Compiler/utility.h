@@ -3,6 +3,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "vector.h"
+
 // Function to append a string to a string
 void string_append(char* _des, const char* _src);
 
@@ -14,5 +16,8 @@ void string_sub(char* _des, const char* _src, const unsigned int _pos, const uns
 
 // Function to split a string, returning the count of sub-strings
 int string_split(_vector *vec, const char *src, const char delim);
+
+// Function to purify a string, preserving only characters and numbers
+char *string_purify(const char *str);
 
 #endif

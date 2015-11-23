@@ -60,4 +60,5 @@ void vector_deepfree(_vector *vec) {
 	vec->data = NULL;
 	free(vec);
 	vec = NULL;
+	return;
 }
