@@ -37,6 +37,10 @@ int main(int argc, char *argv[]) {
 	}*/
 
 	pharser(mem, "double a1, b1, c1, d1;");
+	pharser(mem, "int x, print;");
+	pharser(mem, "int 233;");
+	pharser(mem, "print(x);");
+	pharser(mem, "print(y);");
 	char another[200] = "a1+b1+c1+d1";
 	pharse(another);
 	convert(another);

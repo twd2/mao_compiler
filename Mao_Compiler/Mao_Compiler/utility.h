@@ -20,4 +20,6 @@ int string_split(_vector *vec, const char *src, const char delim);
 // Function to purify a string, preserving only characters and numbers
 char *string_purify(const char *str);
 
+int string_startswith(char* _str, const char* _x);
+
 #endif

@@ -16,14 +16,14 @@ void pharser(_memory *mem, const char *statement) {
 	int len = strlen(statement);
 
 	// variable declaration
-	char temp_identity[10], temp_varnames[1005];
+	char temp_varnames[1005];
 	const char double_declare[] = "double ";
 	const char int_declare[] = "int ";
+	const char print_stat[] = "print";
 	const int double_declare_len = strlen(double_declare);
 	const int int_declare_len = strlen(int_declare);
 
-	string_sub(temp_identity, statement, 0, double_declare_len);
-	if (!strcmp(temp_identity, double_declare)) {
+	if (string_startswith(statement, double_declare)) {
 		// variable declared as a double
 		int i;
 		for (i = double_declare_len - 1; i < strlen(statement); ++i) {
@@ -41,7 +41,7 @@ void pharser(_memory *mem, const char *statement) {
 		}
 		vector_deepfree(vec);
 	}
-	else if (!strcmp(temp_identity, int_declare)) {
+	else if (string_startswith(statement, int_declare)) {
 		// variable declared as a int
 		int i;
 		for (i = int_declare_len - 1; i < strlen(statement); ++i) {
@@ -57,6 +57,9 @@ void pharser(_memory *mem, const char *statement) {
 			add_int_variable(mem, name_purified, 0);
 			free(name_purified);
 		}
+	}
+	else if (string_startswith(statement, print_stat)) {
+		// TODO: print statement
 	}
 	return;
 }

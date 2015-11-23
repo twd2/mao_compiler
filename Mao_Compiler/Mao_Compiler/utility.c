@@ -61,3 +61,17 @@ char *string_purify(const char *str) {
 	}
 	return result;
 }
+
+int string_startswith(char* _str, const char* _x)
+{
+	int lenstr = strlen(_str), lenx = strlen(_x);
+	if (lenstr < lenx) return false;
+
+	char *temp = (char *)malloc((lenx + 1) * sizeof(char));
+	
+	int result = 0;
+	string_sub(temp, _str, 0, lenx);
+	result = strcmp(temp, _x) == 0;
+	free(temp);
+	return result;
+}

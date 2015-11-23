@@ -10,6 +10,7 @@ extern unsigned int error;
 const char OPERATIONS[] = { '+', '-', '*', '/', '#', '(', ')' };
 const char NUMBERS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
+// TODO: no longer global variables
 char stack_ovs[2005][2005];
 char stack_ops[2005];
 _variable stack_cal_ovs[2005];
