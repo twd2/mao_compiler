@@ -39,12 +39,15 @@ int main(int argc, char *argv[]) {
 	pharser(mem, "int a;");
 	pharser(mem, "double x, y;");
 	pharser(mem, "int b, c, d;");
-	pharser(mem, "a = 5.5;");
-	
-	pharser(mem, "x = y = (1 + a)*6.44;");
+	pharser(mem, "a = 2.5;");
+	pharser(mem, "x = y = (1 + a)*2;");
 	pharser(mem, "a + 4;");
 	pharser(mem, "a = a / 2;");
 	pharser(mem, "print(a);");
+	pharser(mem, "print(x);");
+	pharser(mem, "print(y);");
+	// work well till now
+	// TODO: special process with minus sign
 	pharser(mem, "y = (c + 6)*-(1 + 1);");
 	pharser(mem, "print(y);");
 	pharser(mem, "d = a / (2 / 5);");

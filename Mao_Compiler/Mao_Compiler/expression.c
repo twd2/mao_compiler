@@ -10,6 +10,7 @@ extern unsigned int error;
 const char OPERATIONS[] = { '+', '-', '*', '/', '#', '(', ')' };
 const char NUMBERS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
+// TODO: no longer global variables
 char stack_ovs[2005][2005];
 char stack_ops[2005];
 _variable stack_cal_ovs[2005];
@@ -130,8 +131,7 @@ _variable simple_calculate(char op, _variable a, _variable b) {
 			result.int_value = a.int_value * b.int_value;
 			break;
 		case '/':
-			if (b.int_value == 0)
-			{
+			if (b.int_value == 0) {
 				result.type = ERRORVALUE;
 				result.int_value = DIVIDED_BY_ZERO;
 				break;
@@ -167,7 +167,7 @@ void pharse(char *exp) {
 	bool number_var_started = false;
 	while (exp[i] != '@') {
 		if (exp[i] == '-') {
-			if (i == 0 || is_operator(exp[i - 1])) {
+			if (i == 0 || exp[i - 1] == ')') {
 				string_insert(exp, "0", i);
 			}
 		}
@@ -244,6 +244,7 @@ _variable calculate(_memory *mem, char *exp) {
 	int length = strlen(exp);
 	bool number_started = false;
 	bool var_started = false;
+	bool is_double = false;
 	char temp_string[2005];
 	int iterator = 0;
 	stack_cal_ovs_top = -1;
@@ -284,6 +285,9 @@ _variable calculate(_memory *mem, char *exp) {
 			iterator = 0;
 			if (var_started) {
 				_variable var = *get_variable_by_name(mem, temp_string);
+				if (var.type == DOUBLE) {
+					is_double = true;
+				}
 				stack_cal_ovs[++stack_cal_ovs_top] = var;
 				var_started = false;
 			}
@@ -293,6 +297,7 @@ _variable calculate(_memory *mem, char *exp) {
 				if (strchr(temp_string, '.')) {
 					double value = strtod(temp_string, &end);
 					var = create_double_variable(value);
+					is_double = true;
 				}
 				else {
 					int value = strtol(temp_string, &end, 10);
@@ -304,7 +309,15 @@ _variable calculate(_memory *mem, char *exp) {
 		}
 	}
 	_variable result;
-	result.type = DOUBLE;
-	result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+	result.type = is_double ? DOUBLE : INT;
+	switch (result.type)
+	{
+	case INT:
+		result.int_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		break;
+	case DOUBLE:
+		result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		break;
+	}
 	return result;
 }

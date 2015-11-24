@@ -17,14 +17,13 @@ void pharser(_memory *mem, const char *statement) {
 	int len = strlen(statement);
 
 	// variable declaration
-	char temp_identity[10], temp_str[1005];
+	char temp_str[1005];
 	const char double_declare[] = "double ";
 	const char int_declare[] = "int ";
 	const int double_declare_len = strlen(double_declare);
 	const int int_declare_len = strlen(int_declare);
 
-	string_sub(temp_identity, statement, 0, double_declare_len);
-	if (!strcmp(temp_identity, double_declare)) {
+	if (string_startswith(statement, double_declare)) {
 		// variable declared as a double
 		int i;
 		for (i = double_declare_len - 1; i < len; ++i) {
@@ -43,8 +42,7 @@ void pharser(_memory *mem, const char *statement) {
 		vector_deepfree(vec);
 	}
 
-	string_sub(temp_identity, statement, 0, int_declare_len);
-	if (!strcmp(temp_identity, int_declare)) {
+	if (string_startswith(statement, int_declare)) {
 		// variable declared as a int
 		int i;
 		for (i = int_declare_len - 1; i < len; ++i) {
@@ -67,8 +65,8 @@ void pharser(_memory *mem, const char *statement) {
 	const char print_declare2[] = "print(";
 	const int print_declare_len = strlen(print_declare1);
 
-	string_sub(temp_identity, statement, 0, print_declare_len);
-	if (!strcmp(temp_identity, print_declare1) || !strcmp(temp_identity, print_declare2)) {
+	if (string_startswith(statement, print_declare1) ||
+		string_startswith(statement, print_declare2)) {
 		// print statement
 		int i;
 		for (i = print_declare_len - 1; i < len; ++i) {

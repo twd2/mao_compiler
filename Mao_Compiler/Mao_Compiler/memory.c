@@ -80,9 +80,16 @@ void add_double_variable(_memory *p_head, _name_string _name, double _value) {
 
 void set_variable(_memory *p_head, _name_string _name, _variable _var) {
 	_variable *des = get_variable_by_name(p_head, _name);
-	des->type = _var.type;
-	des->int_value = _var.int_value;
-	des->double_value = _var.double_value;
+	// bug fixed: assignment a double to a int, caused data lost
+	if (des->type == INT && _var.type == DOUBLE) {
+		// des->type won't change
+		des->int_value = (int)_var.double_value;
+	}
+	else {
+		des->type = _var.type;
+		des->int_value = _var.int_value;
+		des->double_value = _var.double_value;
+	}
 	return;
 }
 
