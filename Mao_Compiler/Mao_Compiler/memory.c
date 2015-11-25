@@ -9,6 +9,8 @@
 
 unsigned int error = NO_ERROR;
 
+
+
 _memory *create_memory(void) {
 	_memory *p_node = (_memory *)malloc(sizeof(_memory));
 
@@ -84,6 +86,9 @@ void set_variable(_memory *p_head, _name_string _name, _variable _var) {
 	if (des->type == INT && _var.type == DOUBLE) {
 		// des->type won't change
 		des->int_value = (int)_var.double_value;
+	}
+	else if (des->type == DOUBLE && _var.type == INT) {
+		des->double_value = (double)_var.int_value;
 	}
 	else {
 		des->type = _var.type;

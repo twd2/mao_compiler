@@ -14,6 +14,11 @@ void string_append(char *_des, const char *_src) {
 	return;
 }
 
+void string_replace(char *_des, const char _ch, const unsigned int _pos) {
+	_des[_pos] = _ch;
+	return;
+}
+
 void string_insert(char *_des, const char *_src, const unsigned int _pos) {
 	int len_destination = strlen(_des);
 	int len_source = strlen(_src);

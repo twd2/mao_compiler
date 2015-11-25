@@ -9,6 +9,9 @@
 // Function to append a string to a string
 void string_append(char *_des, const char *_src);
 
+// Function to replace a character of a string
+void string_replace(char *_des, const char _ch, const unsigned int _pos);
+
 // Function to instert a string to a string
 void string_insert(char *_des, const char *_src, const unsigned int _pos);
 
