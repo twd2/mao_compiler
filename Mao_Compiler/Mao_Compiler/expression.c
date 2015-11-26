@@ -24,7 +24,7 @@ _priority check_priority(char p1, char p2) {
 		switch (p2) {
 		case '+': case '-': case ')': case '#':
 			return HIGH;
-		case '*': case '/': case '(':
+		case '*': case '/': case '(': case '$':
 			return LOW;
 		default:
 			return ERROR;
@@ -34,7 +34,7 @@ _priority check_priority(char p1, char p2) {
 		switch (p2) {
 		case '+': case '-': case '*': case '/': case ')': case '#':
 			return HIGH;
-		case '(':
+		case '(': case '$':
 			return LOW;
 		default:
 			return ERROR;
@@ -42,7 +42,7 @@ _priority check_priority(char p1, char p2) {
 		break;
 	case '(':
 		switch (p2) {
-		case '+': case '-': case '*': case '/': case '(':
+		case '+': case '-': case '*': case '/': case '(': case '$':
 			return LOW;
 		case ')':
 			return SAME;
@@ -54,7 +54,7 @@ _priority check_priority(char p1, char p2) {
 		switch (p2) {
 		case '+': case '-': case '*': case '/': case ')': case '#':
 			return HIGH;
-		case '(': default:
+		case '$': case '(': default:
 			return ERROR;
 		}
 		break;
@@ -64,10 +64,12 @@ _priority check_priority(char p1, char p2) {
 			return LOW;
 		case '#':
 			return SAME;
-		case ')': default:
+		case ')': case '$': default:
 			return ERROR;
 		}
 		break;
+	case '$':
+		return HIGH;
 	}
 	return ERROR;
 }
@@ -131,10 +133,11 @@ _variable simple_calculate(char op, _variable a, _variable b) {
 			result.int_value = a.int_value * b.int_value;
 			break;
 		case '/':
-			if (b.int_value == 0)
-			{
+			if (b.int_value == 0) {
 				result.type = ERRORVALUE;
 				result.int_value = DIVIDED_BY_ZERO;
+				printf("divided by ZERO\n");
+				exit(1);
 				break;
 			}
 			result.int_value = a.int_value / b.int_value;
@@ -156,6 +159,13 @@ _variable simple_calculate(char op, _variable a, _variable b) {
 			break;
 		case '/':
 			result.double_value = get_value(a) / get_value(b);
+			if (get_value(b) - 0 <= 0.0000001) {
+				result.type = ERRORVALUE;
+				result.double_value = DIVIDED_BY_ZERO;
+				printf("divided by ZERO\n");
+				exit(1);
+				break;
+			}
 			break;
 		}
 	}
@@ -168,8 +178,23 @@ void pharse(char *exp) {
 	bool number_var_started = false;
 	while (exp[i] != '@') {
 		if (exp[i] == '-') {
-			if (i == 0 || is_operator(exp[i - 1])) {
-				string_insert(exp, "0", i);
+			/* how to judge negative sign:
+			 * (1) '(' before this character - negative sign;
+			 * (2) ')' or numbers before this character - minus sign;
+			 * (3) other optional character before this character - negative sign;
+			 * (4) this character is the first - negative sign.
+			 *
+			 * special process with negative sign:
+			 *  - change the minus sign to another new sign '$';
+			 *  - change the priority of the new sign to the highest;
+			 *  - when calculate the new sign:
+			 *     * push back the opt '$';
+			 *     * when come up with '$', get the top one var of ovs_stack.
+			 */
+			if (i == 0 || exp[i - 1] == '(' ||
+				exp[i - 1] == '+' || exp[i - 1] == '-' ||
+				exp[i - 1] == '*' || exp[i - 1] == '/') {
+				string_replace(exp, '$', i);
 			}
 		}
 		if (is_number(exp[i]) || isalpha(exp[i]) || exp[i] == '.') {
@@ -197,7 +222,7 @@ void convert(char *exp) {
 		if (exp[i] == '@') {
 			break;
 		}
-		if (is_operator(exp[i])) {
+		if (is_operator(exp[i]) || exp[i] == '$') {
 			if (check_priority(stack_ops[stack_ops_top], exp[i]) == ERROR) {
 				error = LOGIC_ERROR;
 				break;
@@ -245,8 +270,10 @@ _variable calculate(_memory *mem, char *exp) {
 	int length = strlen(exp);
 	bool number_started = false;
 	bool var_started = false;
+	bool is_double = false;
 	char temp_string[2005];
 	int iterator = 0;
+	stack_cal_ovs_top = -1;
 
 	for (int i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
@@ -257,6 +284,14 @@ _variable calculate(_memory *mem, char *exp) {
 			if (stack_cal_ovs[stack_cal_ovs_top].type == ERRORVALUE) {
 				return stack_cal_ovs[stack_cal_ovs_top];
 			}
+		}
+		else if (exp[i] == '$') {
+			_variable var = stack_cal_ovs[stack_cal_ovs_top];
+			_variable zero;
+			zero.type = var.type;
+			zero.double_value = 0;
+			zero.int_value = 0;
+			stack_cal_ovs[stack_cal_ovs_top] = simple_calculate('-', zero, var);
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -283,7 +318,10 @@ _variable calculate(_memory *mem, char *exp) {
 			temp_string[iterator++] = '\0';
 			iterator = 0;
 			if (var_started) {
-				_variable var = get_variable_by_name(mem, temp_string);
+				_variable var = *get_variable_by_name(mem, temp_string);
+				if (var.type == DOUBLE) {
+					is_double = true;
+				}
 				stack_cal_ovs[++stack_cal_ovs_top] = var;
 				var_started = false;
 			}
@@ -291,8 +329,9 @@ _variable calculate(_memory *mem, char *exp) {
 				_variable var;
 				char *end;
 				if (strchr(temp_string, '.')) {
-					double value = strtod(temp_string, &end, 10);
+					double value = strtod(temp_string, &end);
 					var = create_double_variable(value);
+					is_double = true;
 				}
 				else {
 					int value = strtol(temp_string, &end, 10);
@@ -304,7 +343,15 @@ _variable calculate(_memory *mem, char *exp) {
 		}
 	}
 	_variable result;
-	result.type = DOUBLE;
-	result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+	result.type = is_double ? DOUBLE : INT;
+	switch (result.type)
+	{
+	case INT:
+		result.int_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		break;
+	case DOUBLE:
+		result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		break;
+	}
 	return result;
 }

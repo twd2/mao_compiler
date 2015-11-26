@@ -14,6 +14,11 @@ void string_append(char *_des, const char *_src) {
 	return;
 }
 
+void string_replace(char *_des, const char _ch, const unsigned int _pos) {
+	_des[_pos] = _ch;
+	return;
+}
+
 void string_insert(char *_des, const char *_src, const unsigned int _pos) {
 	int len_destination = strlen(_des);
 	int len_source = strlen(_src);
@@ -62,16 +67,16 @@ char *string_purify(const char *str) {
 	return result;
 }
 
-int string_startswith(char *_str, const char *_x)
+bool string_startswith(char *str, const char *start)
 {
-	int lenstr = strlen(_str), lenx = strlen(_x);
-	if (lenstr < lenx) return false;
-
-	char *temp = (char *)malloc((lenx + 1) * sizeof(char));
-	
-	int result = 0;
-	string_sub(temp, _str, 0, lenx);
-	result = strcmp(temp, _x) == 0;
+	int len_str = strlen(str), len_start = strlen(start);
+	if (len_str < len_start) {
+		return false;
+	}
+	char *temp = (char *)malloc((len_start + 1) * sizeof(char));
+	bool result = false;
+	string_sub(temp, str, 0, len_start);
+	result = strcmp(temp, start) == 0;
 	free(temp);
 	return result;
 }
