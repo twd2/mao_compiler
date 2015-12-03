@@ -1,12 +1,13 @@
 #include "vector.h"
-#include "pharser.h"
+#include "parser.h"
 #include "utility.h"
 #include "memory.h"
 #include "expression.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-void pharser(_memory *mem, const char *statement) {
+void parser(_memory *mem, const char *statement) {
 	/*
 	 * there're three occasions:
 	 * (1) variable declaration
@@ -75,7 +76,7 @@ void pharser(_memory *mem, const char *statement) {
 			}
 		}
 		string_sub(temp_str, statement, print_declare_len, i - print_declare_len);
-		pharse(temp_str);
+		parse(temp_str);
 		convert(temp_str);
 		_variable var = calculate(mem, temp_str);
 		print_variable(var);
@@ -86,7 +87,7 @@ void pharser(_memory *mem, const char *statement) {
 		_vector *vec = vector_new(1);
 		int count = string_split(vec, statement, '=');
 		char *temp_statement = (char *)(*vector_get(vec, count - 1));
-		pharse(temp_statement);
+		parse(temp_statement);
 		convert(temp_statement);
 		_variable var = calculate(mem, temp_statement);
 		for (int i = 0; i < count - 1; ++i) {

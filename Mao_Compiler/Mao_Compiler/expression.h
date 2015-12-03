@@ -32,8 +32,8 @@ bool is_operator(char ch);
 // Function to check whether a character is a number
 bool is_number(char ch);
 
-// Function to pharse numbers: add a space after a number or a variable
-void pharse(char *exp);
+// Function to parse numbers: add a space after a number or a variable
+void parse(char *exp);
 
 // Function to convert infix expression to postfix expression
 void convert(char *exp);

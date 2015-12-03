@@ -1,13 +1,13 @@
-#include "pharser.h"
+#include "parser.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
 
-	if (argc <= 1) {
+	/*if (argc <= 1) {
 		fprintf(stderr, "Argument error.\n");
 		return 1;
-	}
+	}*/
 
 	_memory *mem = create_memory();
 
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	char command[1005];
+	/*char command[1005];
 	FILE *file_input = fopen(argv[1], "r");
 	if (!file_input) {
 		fprintf(stderr, "Source file open error.\n");
@@ -26,7 +26,11 @@ int main(int argc, char *argv[]) {
 		fgets(command, 1005, file_input);
 		pharser(mem, command);
 	}
-	fclose(file_input);
+	fclose(file_input);*/
+	
+	parser(mem, "int a;");
+	parser(mem, "a = 1 + 1;");
+	parser(mem, "print(a);");
 
 	return 0;
 }

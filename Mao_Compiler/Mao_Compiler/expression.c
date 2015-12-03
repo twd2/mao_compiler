@@ -1,5 +1,6 @@
-#include "expression.h"
+#include "stack.h"
 #include "utility.h"
+#include "expression.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,10 +13,8 @@ const char NUMBERS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
 // TODO: no longer global variables
 char stack_ovs[2005][2005];
-char stack_ops[2005];
 _variable stack_cal_ovs[2005];
 int stack_ovs_top = -1;
-int stack_ops_top = -1;
 int stack_cal_ovs_top = -1;
 
 _priority check_priority(char p1, char p2) {
@@ -172,7 +171,7 @@ _variable simple_calculate(char op, _variable a, _variable b) {
 	return result;
 }
 
-void pharse(char *exp) {
+void parse(char *exp) {
 	string_append(exp, "#@");
 	int i = 0;
 	bool number_var_started = false;
@@ -213,7 +212,8 @@ void pharse(char *exp) {
 
 void convert(char *exp) {
 
-	stack_ops[++stack_ops_top] = '#';
+	_stack *stack_ops = stack_new(1);
+	stack_push_constant(stack_ops, '#');
 
 	int length = strlen(exp);
 	bool number_var_started = false;
@@ -223,24 +223,25 @@ void convert(char *exp) {
 			break;
 		}
 		if (is_operator(exp[i]) || exp[i] == '$') {
-			if (check_priority(stack_ops[stack_ops_top], exp[i]) == ERROR) {
+			if (check_priority((char)(*stack_top(stack_ops)), exp[i]) == ERROR) {
 				error = LOGIC_ERROR;
 				break;
 			}
-			while (check_priority(stack_ops[stack_ops_top], exp[i]) == HIGH) {
+			while (check_priority((char)(*stack_top(stack_ops)), exp[i]) == HIGH) {
 				char ops_str[2];
-				ops_str[0] = stack_ops[stack_ops_top--];
+				ops_str[0] = (char)(*stack_top(stack_ops));
 				ops_str[1] = '\0';
+				stack_pop(stack_ops);
 
 				strcat(stack_ovs[stack_ovs_top - 1], stack_ovs[stack_ovs_top]);
 				strcat(stack_ovs[stack_ovs_top - 1], ops_str);
 				stack_ovs_top--;
 			}
-			if (check_priority(stack_ops[stack_ops_top], exp[i]) == LOW) {
-				stack_ops[++stack_ops_top] = exp[i];
+			if (check_priority((char)(*stack_top(stack_ops)), exp[i]) == LOW) {
+				stack_push_constant(stack_ops, exp[i]);
 			}
 			else {
-				stack_ops_top--;
+				stack_pop(stack_ops);
 			}
 		}
 		else if (is_number(exp[i]) || isalpha(exp[i]) || exp[i] == '.') {
