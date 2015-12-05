@@ -15,7 +15,7 @@ typedef enum { HIGH, LOW, SAME, ERROR } _priority;
 _priority check_priority(char p1, char p2);
 
 // Function to calculate two variable
-_variable simple_calculate(char op, _variable a, _variable b);
+_variable *simple_calculate(char op, _variable a, _variable b);
 
 // Function to get value from a variable to calculate two variables except two integers
 double get_value(_variable var);
