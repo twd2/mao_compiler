@@ -9,13 +9,13 @@
 
 unsigned int error = NO_ERROR;
 
-_memory *create_memory() {
+_memory *create_memory(void) {
 	_memory *p_node = (_memory *)malloc(sizeof(_memory));
 
 	if (p_node) {
 		p_node->variable.int_value = 0;
 		p_node->variable.type = INT;
-		strcpy(p_node->name, "@");
+		strcpy(p_node->variable.name, "@");
 		p_node->p_next = NULL;
 		return p_node;
 	}
@@ -29,7 +29,7 @@ void add_node(_memory *p_head, _memory *_p_node) {
 	_memory *p_current = p_head;
 
 	if (!p_head) {
-		// If p_head is NULL
+		// If _p_head is NULL
 		p_head = _p_node;
 		_p_node->p_next = NULL;
 	}
@@ -50,7 +50,8 @@ void add_int_variable(_memory *p_head, _name_string _name, int _value) {
 	if (p_node) {
 		p_node->variable.int_value = _value;
 		p_node->variable.type = INT;
-		strcpy(p_node->name, _name);
+		p_node->variable.is_constant = false;
+		strcpy(p_node->variable.name, _name);
 
 		add_node(p_head, p_node);
 	}
@@ -67,7 +68,8 @@ void add_double_variable(_memory *p_head, _name_string _name, double _value) {
 	if (p_node) {
 		p_node->variable.double_value = _value;
 		p_node->variable.type = DOUBLE;
-		strcpy(p_node->name, _name);
+		p_node->variable.is_constant = false;
+		strcpy(p_node->variable.name, _name);
 
 		add_node(p_head, p_node);
 	}
@@ -78,35 +80,69 @@ void add_double_variable(_memory *p_head, _name_string _name, double _value) {
 	return;
 }
 
-_variable get_variable_by_name(_memory *p_head, _name_string _name) {
+void set_variable(_memory *p_head, _name_string _name, _variable _var) {
+	_variable *des = get_variable_by_name(p_head, _name);
+	// bug fixed: assignment a double to a int, caused data lost
+	if (des->type == INT && _var.type == DOUBLE) {
+		// des->type won't change
+		des->int_value = (int)_var.double_value;
+	}
+	else if (des->type == DOUBLE && _var.type == INT) {
+		des->double_value = (double)_var.int_value;
+	}
+	else {
+		des->type = _var.type;
+		des->int_value = _var.int_value;
+		des->double_value = _var.double_value;
+	}
+	return;
+}
+
+_variable *get_variable_by_name(_memory *p_head, _name_string _name) {
 	_memory *p_current = p_head;
-	_variable var_null = {INT, 0, 0};
 	if (!p_current) {
 		error = MEMORY_EMPTY;
-		return var_null;
+		return NULL;
 	}
 	else {
 		while (p_current) {
-			if (!strcmp(p_current->name, _name)) {
-				return p_current->variable;
+			if (!strcmp(p_current->variable.name, _name)) {
+				return &(p_current->variable);
 			}
 			p_current = p_current->p_next;
 		}
 	}
 	error = MATCH_ERROR;
-	return var_null;
+	return NULL;
+}
+
+void print_variable(_variable var) {
+	switch (var.type)
+	{
+	case INT:
+		printf("%d\n", var.int_value);
+		break;
+	case DOUBLE:
+		printf("%lf\n", var.double_value);
+		break;
+	case ERRORVALUE:
+		printf("divided by ZERO\n");
+		exit(1);
+		break;
+	}
+	return;
 }
 
 _type get_type_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).type;
+	return (*get_variable_by_name(p_head, _name)).type;
 }
 
 int get_int_value_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).int_value;
+	return (*get_variable_by_name(p_head, _name)).int_value;
 }
 
 double get_double_value_by_name(_memory *p_head, _name_string _name) {
-	return get_variable_by_name(p_head, _name).double_value;
+	return (*get_variable_by_name(p_head, _name)).double_value;
 }
 
 void assign_variable(_variable *_destination, const _variable *_source) {

@@ -1,2 +1,2 @@
 # Mao Compiler
-C language big homeowork of School of Software Engineering, Tongji University
+C language big homework of School of Software Engineering, Tongji University

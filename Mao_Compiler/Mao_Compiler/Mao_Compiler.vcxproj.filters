@@ -24,10 +24,16 @@
     <ClCompile Include="expression.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="pharser.c">
+    <ClCompile Include="utility.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="utility.c">
+    <ClCompile Include="vector.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="stack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="parser.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,13 +41,19 @@
     <ClInclude Include="memory.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="pharser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="expression.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="vector.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="stack.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
