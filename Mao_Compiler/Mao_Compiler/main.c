@@ -4,11 +4,6 @@
 
 int main(int argc, char *argv[]) {
 
-	/*if (argc <= 1) {
-		fprintf(stderr, "Argument error.\n");
-		return 1;
-	}*/
-
 	_memory *mem = create_memory();
 
 	if (!mem) {
@@ -16,15 +11,23 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	/*char command[1005];
-	FILE *file_input = fopen(argv[1], "r");
+	char command[1005];
+	FILE *file_input = NULL;
+	if (argc > 1) {
+		file_input = fopen(argv[1], "r");
+	}
+	else {
+		file_input = stdin;
+	}
+
 	if (!file_input) {
 		fprintf(stderr, "Source file open error.\n");
 		return 1;
 	}
+
 	while (!feof(file_input)) {
 		fgets(command, 1005, file_input);
-		pharser(mem, command);
+		parser(mem, command);
 	}
 	fclose(file_input);*/
 	
