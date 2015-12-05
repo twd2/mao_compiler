@@ -15,3 +15,5 @@ obj
 *.exe
 *.vsp
 *.psess
+*.DS_Store
+.DS_Store

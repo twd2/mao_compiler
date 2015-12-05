@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 		fgets(command, 1005, file_input);
 		parser(mem, command);
 	}
-	fclose(file_input);*/
+	fclose(file_input);
 	
 	parser(mem, "int a;");
 	parser(mem, "a = -1;");
