@@ -112,6 +112,7 @@ void parser(_memory *mem, const char *statement) {
 		}
 
 	}
+
 	free(current_statement);
 	vector_deepfree(vec_statement);
 	return;

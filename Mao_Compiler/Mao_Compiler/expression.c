@@ -340,7 +340,7 @@ _variable calculate(_memory *mem, char *exp) {
 			stack_push(stack_ovs, res);
 			if (res->type == ERRORVALUE) {
 				_variable result = *res;
-				stack_pop_and_free(stack_ovs);
+				stack_deepfree(stack_ovs);
 				return result;
 			}
 		}
