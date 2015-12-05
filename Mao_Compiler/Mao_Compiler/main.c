@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 	fclose(file_input);*/
 	
 	parser(mem, "int a;");
-	parser(mem, "a = 1 + 1;");
+	parser(mem, "a = 1 + 2;");
 	parser(mem, "print(a);");
 
 	return 0;

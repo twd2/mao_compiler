@@ -11,12 +11,6 @@ extern unsigned int error;
 const char OPERATIONS[] = { '+', '-', '*', '/', '#', '(', ')' };
 const char NUMBERS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
-// TODO: no longer global variables
-char stack_ovs[2005][2005];
-_variable stack_cal_ovs[2005];
-int stack_ovs_top = -1;
-int stack_cal_ovs_top = -1;
-
 _priority check_priority(char p1, char p2) {
 	switch (p1) {
 	case '+': case '-':
@@ -213,9 +207,11 @@ void parse(char *exp) {
 void convert(char *exp) {
 
 	_stack *stack_ops = stack_new(1);
-	stack_push_constant(stack_ops, '#');
+	_stack *stack_ovs = stack_new(1);
+	stack_push_constant(stack_ops, (int)'#');
 
 	int length = strlen(exp);
+	char exp_tmp_str[2005] = {'\0'};
 	bool number_var_started = false;
 	
 	for (int i = 0; i < length; ++i) {
@@ -223,22 +219,35 @@ void convert(char *exp) {
 			break;
 		}
 		if (is_operator(exp[i]) || exp[i] == '$') {
-			if (check_priority((char)(*stack_top(stack_ops)), exp[i]) == ERROR) {
+			if (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == ERROR) {
 				error = LOGIC_ERROR;
 				break;
 			}
-			while (check_priority((char)(*stack_top(stack_ops)), exp[i]) == HIGH) {
+			while (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == HIGH) {
 				char ops_str[2];
-				ops_str[0] = (char)(*stack_top(stack_ops));
+				ops_str[0] = *(char *)(*stack_top(stack_ops));
 				ops_str[1] = '\0';
 				stack_pop(stack_ops);
 
-				strcat(stack_ovs[stack_ovs_top - 1], stack_ovs[stack_ovs_top]);
-				strcat(stack_ovs[stack_ovs_top - 1], ops_str);
-				stack_ovs_top--;
+				size_t ovs_str1_len = strlen((char *)(*stack_top(stack_ovs)));
+				char *ovs_str1 = (char *)malloc((ovs_str1_len + 1) * sizeof(char));
+				strcpy(ovs_str1, (char *)(*stack_top(stack_ovs)));
+				stack_pop(stack_ovs);
+
+				size_t ovs_str2_len = strlen((char *)(*stack_top(stack_ovs)));
+				char *ovs_str2 = (char *)malloc((ovs_str2_len + ovs_str1_len + 3) * sizeof(char));
+				strcpy(ovs_str2, (char *)(*stack_top(stack_ovs)));
+				stack_pop(stack_ovs);
+
+				strcat(ovs_str2, ovs_str1);
+				strcat(ovs_str2, ops_str);
+				stack_push_string(stack_ovs, ovs_str2, strlen(ovs_str2));
+
+				free(ovs_str1);
+				free(ovs_str2);
 			}
-			if (check_priority((char)(*stack_top(stack_ops)), exp[i]) == LOW) {
-				stack_push_constant(stack_ops, exp[i]);
+			if (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == LOW) {
+				stack_push_constant(stack_ops, (int)exp[i]);
 			}
 			else {
 				stack_pop(stack_ops);
@@ -250,19 +259,25 @@ void convert(char *exp) {
 			exp_str[1] = '\0';
 
 			if (number_var_started) {
-				strcat(stack_ovs[stack_ovs_top], exp_str);
+				strcat(exp_tmp_str, exp_str);
 			}
 			else {
-				strcpy(stack_ovs[++stack_ovs_top], exp_str);
+				exp_tmp_str[0] = exp[i];
+				exp_tmp_str[1] = '\0';
 				number_var_started = true;
 			}
 		}
-		else if (exp[i] == ' ') {
-			strcat(stack_ovs[stack_ovs_top], " ");
+		else if (exp[i] == ' ' && number_var_started) {
+			strcat(exp_tmp_str, " ");
+			stack_push_string(stack_ovs, exp_tmp_str, strlen(exp_tmp_str));
+			exp_tmp_str[0] = '\0';
 			number_var_started = false;
 		}
 	}
-	strcpy(exp, stack_ovs[stack_ovs_top]);
+	strcpy(exp, (char *)(*stack_top(stack_ovs)));
+
+	stack_free(stack_ops);
+	stack_free(stack_ovs);
 	return;
 }
 
@@ -274,25 +289,29 @@ _variable calculate(_memory *mem, char *exp) {
 	bool is_double = false;
 	char temp_string[2005];
 	int iterator = 0;
-	stack_cal_ovs_top = -1;
+
+	_stack *stack_ovs = stack_new(1);
 
 	for (int i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
-			_variable a = stack_cal_ovs[stack_cal_ovs_top - 1];
-			_variable b = stack_cal_ovs[stack_cal_ovs_top];
-			stack_cal_ovs_top--;
-			stack_cal_ovs[stack_cal_ovs_top] = simple_calculate(exp[i], a, b);
-			if (stack_cal_ovs[stack_cal_ovs_top].type == ERRORVALUE) {
-				return stack_cal_ovs[stack_cal_ovs_top];
+			_variable b = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop(stack_ovs);
+			_variable a = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop(stack_ovs);
+			_variable res = simple_calculate(exp[i], b, a);
+			stack_push(stack_ovs, &res, sizeof(res));
+			if (((_variable *)(*(stack_top(stack_ovs))))->type == ERRORVALUE) {
+				return *(_variable *)(*(stack_top(stack_ovs)));
 			}
 		}
 		else if (exp[i] == '$') {
-			_variable var = stack_cal_ovs[stack_cal_ovs_top];
+			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
 			_variable zero;
 			zero.type = var.type;
 			zero.double_value = 0;
 			zero.int_value = 0;
-			stack_cal_ovs[stack_cal_ovs_top] = simple_calculate('-', zero, var);
+			_variable res = simple_calculate('-', zero, var);
+			stack_push(stack_ovs, &res, sizeof(res));
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -323,7 +342,7 @@ _variable calculate(_memory *mem, char *exp) {
 				if (var.type == DOUBLE) {
 					is_double = true;
 				}
-				stack_cal_ovs[++stack_cal_ovs_top] = var;
+				stack_push(stack_ovs, &var, sizeof(var));
 				var_started = false;
 			}
 			else if (number_started) {
@@ -338,7 +357,7 @@ _variable calculate(_memory *mem, char *exp) {
 					int value = strtol(temp_string, &end, 10);
 					var = create_int_variable(value);
 				}
-				stack_cal_ovs[++stack_cal_ovs_top] = var;
+				stack_push(stack_ovs, &var, sizeof(var));
 				number_started = false;
 			}
 		}
@@ -348,11 +367,12 @@ _variable calculate(_memory *mem, char *exp) {
 	switch (result.type)
 	{
 	case INT:
-		result.int_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		result.int_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
 		break;
 	case DOUBLE:
-		result.double_value = get_value(stack_cal_ovs[stack_cal_ovs_top]);
+		result.double_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
 		break;
 	}
+	stack_free(stack_ovs);
 	return result;
 }
