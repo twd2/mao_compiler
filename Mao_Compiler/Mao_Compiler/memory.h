@@ -3,6 +3,8 @@
 #ifndef _MEMORY_H
 #define _MEMORY_H
 
+#include <stdbool.h>
+
 #define NO_ERROR        0x00
 #define MATCH_ERROR     0x01
 #define MALLOC_ERROR    0x02
@@ -15,12 +17,13 @@ typedef char _name_string[25];
 
 typedef struct _variable {
 	_type type;
+	_name_string name;
 	int int_value;
 	double double_value;
+	bool is_constant;
 } _variable;
 
 typedef struct _memory {
-	_name_string name;
 	_variable variable;
 	struct _memory *p_next;
 } _memory;

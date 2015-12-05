@@ -67,6 +67,16 @@ char *string_purify(const char *str) {
 	return result;
 }
 
+void string_clearspace(char *str) {
+	int len = strlen(str);
+	for (int i = 0, j = 0; i <= len; ++i) {
+		if (str[i] != ' ') {
+			str[j++] = str[i];
+		}
+	}
+	return;
+}
+
 bool string_startswith(char *str, const char *start)
 {
 	int len_str = strlen(str), len_start = strlen(start);

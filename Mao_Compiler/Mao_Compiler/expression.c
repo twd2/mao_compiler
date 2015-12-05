@@ -19,23 +19,25 @@ _priority check_priority(char p1, char p2) {
 			return HIGH;
 		case '*': case '/': case '(': case '$':
 			return LOW;
-		default:
+		case '=': default:
 			return ERROR;
 		}
 		break;
 	case '*': case '/':
 		switch (p2) {
-		case '+': case '-': case '*': case '/': case ')': case '#':
+		case '+': case '-': case '*': case '/':
+		case ')': case '#':
 			return HIGH;
 		case '(': case '$':
 			return LOW;
-		default:
+		case '=': default:
 			return ERROR;
 		}
 		break;
 	case '(':
 		switch (p2) {
-		case '+': case '-': case '*': case '/': case '(': case '$':
+		case '+': case '-': case '*': case '/':
+		case '(': case '$': case '=':
 			return LOW;
 		case ')':
 			return SAME;
@@ -45,24 +47,38 @@ _priority check_priority(char p1, char p2) {
 		break;
 	case ')':
 		switch (p2) {
-		case '+': case '-': case '*': case '/': case ')': case '#':
+		case '+': case '-': case '*': case '/':
+		case ')': case '#':
 			return HIGH;
-		case '$': case '(': default:
+		case '$': case '=': case '(': default:
 			return ERROR;
 		}
 		break;
 	case '#':
 		switch (p2) {
-		case '+': case '-': case '*': case '/': case '(':
+		case '+': case '-': case '*': case '/':
+		case '(': case '$': case '=':
 			return LOW;
 		case '#':
 			return SAME;
-		case ')': case '$': default:
+		case ')': default:
 			return ERROR;
 		}
 		break;
 	case '$':
-		return HIGH;
+		switch (p2) {
+		case '=':
+			return ERROR;
+		default:
+			return HIGH;
+		}
+	case '=':
+		switch (p2) {
+		case '#':
+			return HIGH;
+		default:
+			return LOW;
+		}
 	}
 	return ERROR;
 }
@@ -71,6 +87,7 @@ _variable create_int_variable(int c) {
 	_variable var;
 	var.int_value = c;
 	var.type = INT;
+	var.is_constant = true;
 	return var;
 }
 
@@ -78,6 +95,7 @@ _variable create_double_variable(double c) {
 	_variable var;
 	var.double_value = c;
 	var.type = DOUBLE;
+	var.is_constant = true;
 	return var;
 }
 
@@ -112,6 +130,7 @@ bool is_number(char ch) {
 
 _variable simple_calculate(char op, _variable a, _variable b) {
 	_variable result;
+	result.is_constant = true;
 	if (a.type == INT && b.type == INT) {
 		result.type = INT;
 		switch (op)
@@ -186,7 +205,8 @@ void parse(char *exp) {
 			 */
 			if (i == 0 || exp[i - 1] == '(' ||
 				exp[i - 1] == '+' || exp[i - 1] == '-' ||
-				exp[i - 1] == '*' || exp[i - 1] == '/') {
+				exp[i - 1] == '*' || exp[i - 1] == '/' ||
+				exp[i - 1] == '=') {
 				string_replace(exp, '$', i);
 			}
 		}
@@ -218,33 +238,47 @@ void convert(char *exp) {
 		if (exp[i] == '@') {
 			break;
 		}
-		if (is_operator(exp[i]) || exp[i] == '$') {
-			if (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == ERROR) {
+		if (is_operator(exp[i]) || exp[i] == '$' || exp[i] == '=') {
+			char stack_top_char = *(char *)(*stack_top(stack_ops));
+			if (check_priority(stack_top_char, exp[i]) == ERROR) {
 				error = LOGIC_ERROR;
 				break;
 			}
-			while (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == HIGH) {
+			while (check_priority(stack_top_char, exp[i]) == HIGH) {
 				char ops_str[2];
 				ops_str[0] = *(char *)(*stack_top(stack_ops));
 				ops_str[1] = '\0';
 				stack_pop(stack_ops);
 
-				size_t ovs_str1_len = strlen((char *)(*stack_top(stack_ovs)));
-				char *ovs_str1 = (char *)malloc((ovs_str1_len + 1) * sizeof(char));
-				strcpy(ovs_str1, (char *)(*stack_top(stack_ovs)));
-				stack_pop(stack_ovs);
+				if (stack_top_char == '$') {
+					size_t ovs_str_len = strlen((char *)(*stack_top(stack_ovs)));
+					char *ovs_str = (char *)malloc((ovs_str_len + 1) * sizeof(char));
+					strcpy(ovs_str, (char *)(*stack_top(stack_ovs)));
+					stack_pop(stack_ovs);
 
-				size_t ovs_str2_len = strlen((char *)(*stack_top(stack_ovs)));
-				char *ovs_str2 = (char *)malloc((ovs_str2_len + ovs_str1_len + 3) * sizeof(char));
-				strcpy(ovs_str2, (char *)(*stack_top(stack_ovs)));
-				stack_pop(stack_ovs);
+					strcat(ovs_str, ops_str);
+					stack_push_string(stack_ovs, ovs_str, strlen(ovs_str));
 
-				strcat(ovs_str2, ovs_str1);
-				strcat(ovs_str2, ops_str);
-				stack_push_string(stack_ovs, ovs_str2, strlen(ovs_str2));
+					free(ovs_str);
+				}
+				else {
+					size_t ovs_str1_len = strlen((char *)(*stack_top(stack_ovs)));
+					char *ovs_str1 = (char *)malloc((ovs_str1_len + 1) * sizeof(char));
+					strcpy(ovs_str1, (char *)(*stack_top(stack_ovs)));
+					stack_pop(stack_ovs);
 
-				free(ovs_str1);
-				free(ovs_str2);
+					size_t ovs_str2_len = strlen((char *)(*stack_top(stack_ovs)));
+					char *ovs_str2 = (char *)malloc((ovs_str2_len + ovs_str1_len + 3) * sizeof(char));
+					strcpy(ovs_str2, (char *)(*stack_top(stack_ovs)));
+					stack_pop(stack_ovs);
+
+					strcat(ovs_str2, ovs_str1);
+					strcat(ovs_str2, ops_str);
+					stack_push_string(stack_ovs, ovs_str2, strlen(ovs_str2));
+
+					free(ovs_str1);
+					free(ovs_str2);
+				}
 			}
 			if (check_priority(*(char *)(*stack_top(stack_ops)), exp[i]) == LOW) {
 				stack_push_constant(stack_ops, (int)exp[i]);
@@ -306,12 +340,22 @@ _variable calculate(_memory *mem, char *exp) {
 		}
 		else if (exp[i] == '$') {
 			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop(stack_ovs);
 			_variable zero;
 			zero.type = var.type;
 			zero.double_value = 0;
 			zero.int_value = 0;
+			zero.is_constant = true;
 			_variable res = simple_calculate('-', zero, var);
 			stack_push(stack_ovs, &res, sizeof(res));
+		}
+		else if (exp[i] == '=') {
+			_variable constant = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop(stack_ovs);
+			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop(stack_ovs);
+			set_variable(mem, var.name, constant);
+			stack_push(stack_ovs, &var, sizeof(var));
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name

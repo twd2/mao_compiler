@@ -24,6 +24,9 @@ int string_split(_vector *vec, const char *src, const char delim);
 // Function to purify a string, preserving only characters and numbers
 char *string_purify(const char *str);
 
+// Function to delete all spaces in a string
+void string_clearspace(char *str);
+
 // Function to check whether a string starts with a specific string
 bool string_startswith(char *str, const char *start);
 

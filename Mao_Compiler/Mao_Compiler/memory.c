@@ -9,15 +9,13 @@
 
 unsigned int error = NO_ERROR;
 
-
-
 _memory *create_memory(void) {
 	_memory *p_node = (_memory *)malloc(sizeof(_memory));
 
 	if (p_node) {
 		p_node->variable.int_value = 0;
 		p_node->variable.type = INT;
-		strcpy(p_node->name, "@");
+		strcpy(p_node->variable.name, "@");
 		p_node->p_next = NULL;
 		return p_node;
 	}
@@ -52,7 +50,8 @@ void add_int_variable(_memory *p_head, _name_string _name, int _value) {
 	if (p_node) {
 		p_node->variable.int_value = _value;
 		p_node->variable.type = INT;
-		strcpy(p_node->name, _name);
+		p_node->variable.is_constant = false;
+		strcpy(p_node->variable.name, _name);
 
 		add_node(p_head, p_node);
 	}
@@ -69,7 +68,8 @@ void add_double_variable(_memory *p_head, _name_string _name, double _value) {
 	if (p_node) {
 		p_node->variable.double_value = _value;
 		p_node->variable.type = DOUBLE;
-		strcpy(p_node->name, _name);
+		p_node->variable.is_constant = false;
+		strcpy(p_node->variable.name, _name);
 
 		add_node(p_head, p_node);
 	}
@@ -106,7 +106,7 @@ _variable *get_variable_by_name(_memory *p_head, _name_string _name) {
 	}
 	else {
 		while (p_current) {
-			if (!strcmp(p_current->name, _name)) {
+			if (!strcmp(p_current->variable.name, _name)) {
 				return &(p_current->variable);
 			}
 			p_current = p_current->p_next;
