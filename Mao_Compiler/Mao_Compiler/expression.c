@@ -182,7 +182,7 @@ _variable *simple_calculate(char op, _variable a, _variable b) {
 }
 
 void parse(char *exp) {
-	string_append(exp, "#@");
+	string_append(exp, "#@"); // here, may cause buffer overflow
 	int i = 0;
 	bool number_var_started = false;
 	while (exp[i] != '@') {
@@ -355,9 +355,7 @@ _variable calculate(_memory *mem, char *exp) {
 			_variable constant = *(_variable *)(*(stack_top(stack_ovs)));
 			stack_pop_and_free(stack_ovs);
 			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
-			stack_pop(stack_ovs);
 			set_variable(mem, var->name, constant);
-			stack_push(stack_ovs, var);
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -384,21 +382,21 @@ _variable calculate(_memory *mem, char *exp) {
 			temp_string[iterator++] = '\0';
 			iterator = 0;
 			if (var_started) {
-				_variable *varptr = get_variable_by_name(mem, temp_string);
-				if (!varptr) {
+				_variable *var = get_variable_by_name(mem, temp_string);
+				if (!var) {
 					stack_deepfree(stack_ovs);
 					_variable result;
 					result.type = ERRORVALUE;
 					result.int_value = USED_BEFORE_DEFINE;
 					return result;
 				}
-				_variable var = *varptr;
-				if (var.type == DOUBLE) {
+
+				if (var->type == DOUBLE) {
 					is_double = true;
 				}
-				_variable *v = (_variable *)malloc(sizeof(_variable));
-				*v = var;
-				stack_push(stack_ovs, v);
+				_variable *var_copied = (_variable *)malloc(sizeof(_variable));
+				*var_copied = *var;
+				stack_push(stack_ovs, var_copied);
 				var_started = false;
 			}
 			else if (number_started) {
