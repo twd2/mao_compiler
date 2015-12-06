@@ -33,7 +33,7 @@ void parser(_memory *mem, const char *statement) {
 		bool is_assignment = true;
 
 		// variable declaration
-		char temp_str[1005];
+		char temp_str[1005]; // TODO(twd2): enough?
 		const char double_declare[] = "double ";
 		const char int_declare[] = "int ";
 		const int double_declare_len = strlen(double_declare);
@@ -102,18 +102,7 @@ void parser(_memory *mem, const char *statement) {
 			_variable var = calculate(mem, temp_str);
 			if (var.type == ERRORVALUE)
 			{
-				switch (var.int_value)
-				{
-				case DIVIDED_BY_ZERO:
-					printf("divided by ZERO\n");
-					break;
-				case USED_BEFORE_DEFINE:
-					printf("Using undefined variable\n");
-					break;
-				default:
-					printf("Unknown error\n");
-					break;
-				}
+				catch_error(var.int_value);
 				break;
 			}
 			print_variable(var);
@@ -121,24 +110,14 @@ void parser(_memory *mem, const char *statement) {
 
 		// variable assignment
 		if (is_assignment) {
-			string_clearspace(current_statement);
-			parse(current_statement);
-			convert(current_statement);
-			_variable var = calculate(mem, current_statement);
+			strcpy(temp_str, current_statement);
+			string_clearspace(temp_str);
+			parse(temp_str);
+			convert(temp_str);
+			_variable var = calculate(mem, temp_str);
 			if (var.type == ERRORVALUE)
 			{
-				switch (var.int_value)
-				{
-				case DIVIDED_BY_ZERO:
-					printf("divided by ZERO\n");
-					break;
-				case USED_BEFORE_DEFINE:
-					printf("Using undefined variable\n");
-					break;
-				default:
-					printf("Unknown error\n");
-					break;
-				}
+				catch_error(var.int_value);
 				break;
 			}
 		}
@@ -148,4 +127,20 @@ void parser(_memory *mem, const char *statement) {
 	free(current_statement);
 	vector_deepfree(vec_statement);
 	return;
+}
+
+void catch_error(int error_no)
+{
+	switch (error_no)
+	{
+	case DIVIDED_BY_ZERO:
+		printf("divided by ZERO\n");
+		break;
+	case USED_BEFORE_DEFINE:
+		printf("Using undefined variable\n");
+		break;
+	default:
+		printf("Unknown error\n");
+		break;
+	}
 }

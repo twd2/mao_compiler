@@ -8,4 +8,7 @@
 // Function to parse a statement
 void parser(_memory *mem, const char *statement);
 
+// Function to catch error
+void catch_error(int error_no);
+
 #endif
