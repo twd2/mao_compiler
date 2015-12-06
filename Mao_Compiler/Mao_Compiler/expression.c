@@ -271,7 +271,7 @@ void convert(char *exp) {
 					strcat(ovs_str_new, ovs_str2);
 					strcat(ovs_str_new, ovs_str1);
 					strcat(ovs_str_new, ops_str);
-					stack_push_string(stack_ovs, ovs_str_new, strlen(ovs_str_new));
+					stack_push_string(stack_ovs, ovs_str_new);
 
 					free(ovs_str1);
 					free(ovs_str2);
@@ -301,7 +301,7 @@ void convert(char *exp) {
 		}
 		else if (exp[i] == ' ' && number_var_started) {
 			strcat(exp_tmp_str, " ");
-			stack_push_string(stack_ovs, exp_tmp_str, strlen(exp_tmp_str));
+			stack_push_string(stack_ovs, exp_tmp_str);
 			exp_tmp_str[0] = '\0';
 			number_var_started = false;
 		}
@@ -315,7 +315,7 @@ void convert(char *exp) {
 
 _variable calculate(_memory *mem, char *exp) {
 
-	int length = strlen(exp);
+	size_t length = strlen(exp);
 	bool number_started = false;
 	bool var_started = false;
 	bool is_double = false;
@@ -419,7 +419,7 @@ _variable calculate(_memory *mem, char *exp) {
 	switch (result.type)
 	{
 	case INT:
-		result.int_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
+		result.int_value = (int)get_value(*(_variable *)(*(stack_top(stack_ovs))));
 		break;
 	case DOUBLE:
 		result.double_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
