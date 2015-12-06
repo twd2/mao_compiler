@@ -100,8 +100,7 @@ void parser(_memory *mem, const char *statement) {
 			parse(temp_str);
 			convert(temp_str);
 			_variable var = calculate(mem, temp_str);
-			if (var.type == ERRORVALUE)
-			{
+			if (var.type == ERRORVALUE) {
 				catch_error(var.int_value);
 				break;
 			}
@@ -115,8 +114,7 @@ void parser(_memory *mem, const char *statement) {
 			parse(temp_str);
 			convert(temp_str);
 			_variable var = calculate(mem, temp_str);
-			if (var.type == ERRORVALUE)
-			{
+			if (var.type == ERRORVALUE) {
 				catch_error(var.int_value);
 				break;
 			}
@@ -129,10 +127,8 @@ void parser(_memory *mem, const char *statement) {
 	return;
 }
 
-void catch_error(int error_no)
-{
-	switch (error_no)
-	{
+void catch_error(int error_code) {
+	switch (error_code) {
 	case DIVIDED_BY_ZERO:
 		printf("divided by ZERO\n");
 		break;

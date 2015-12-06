@@ -134,8 +134,7 @@ _variable *simple_calculate(char op, _variable a, _variable b) {
 	result->is_constant = true;
 	if (a.type == INT && b.type == INT) {
 		result->type = INT;
-		switch (op)
-		{
+		switch (op) {
 		case '+':
 			result->int_value = a.int_value + b.int_value;
 			break;
@@ -157,8 +156,7 @@ _variable *simple_calculate(char op, _variable a, _variable b) {
 	}
 	else {
 		result->type = DOUBLE;
-		switch (op)
-		{
+		switch (op) {
 		case '+':
 			result->double_value = get_value(a) + get_value(b);
 			break;
