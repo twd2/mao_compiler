@@ -324,7 +324,7 @@ _variable calculate(_memory *mem, char *exp) {
 
 	_stack *stack_ovs = stack_new(1);
 
-	for (int i = 0; i < length; ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
 			_variable b = *(_variable *)(*(stack_top(stack_ovs)));
 			stack_pop_and_free(stack_ovs);
