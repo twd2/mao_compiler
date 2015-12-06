@@ -51,6 +51,19 @@ void stack_push(_stack *stack, void *data) {
 	return;
 }
 
+void stack_copy_and_push(_stack *stack, void *data, size_t size) {
+	if (stack->size == stack->capacity) {
+		stack->capacity *= 2;
+		stack->data = (void **)realloc(stack->data, stack->capacity * sizeof(void *));
+	}
+
+	void *p_data_copied = malloc(size);
+	memcpy(p_data_copied, data, size);
+	stack->data[stack->size] = p_data_copied;
+	++stack->size;
+	return;
+}
+
 void stack_deepfree(_stack *stack) {
 	while (stack_size(stack) > 0) {
 		stack_pop_and_free(stack);

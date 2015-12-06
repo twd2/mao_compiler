@@ -22,7 +22,7 @@ void parser(_memory *mem, const char *statement) {
 
 	for (int i = 0; i < count; ++i) {
 
-		int len = strlen((char *)*vector_get(vec_statement, i));
+		size_t len = strlen((char *)*vector_get(vec_statement, i));
 		current_statement = (char *)realloc(current_statement, sizeof(char) * (len + 1));
 		strcpy(current_statement, (char *)*vector_get(vec_statement, i));
 
@@ -36,14 +36,14 @@ void parser(_memory *mem, const char *statement) {
 		char temp_str[1005]; // TODO(twd2): enough?
 		const char double_declare[] = "double ";
 		const char int_declare[] = "int ";
-		const int double_declare_len = strlen(double_declare);
-		const int int_declare_len = strlen(int_declare);
+		const size_t double_declare_len = strlen(double_declare);
+		const size_t int_declare_len = strlen(int_declare);
 
 		if (string_startswith(current_statement, double_declare)) {
 			// variable declared as a double
 			is_assignment = false;
 
-			int j;
+			size_t j;
 			for (j = double_declare_len - 1; j < len; ++j) {
 				if (current_statement[j] != ' ') {
 					break;
@@ -64,7 +64,7 @@ void parser(_memory *mem, const char *statement) {
 			// variable declared as a int
 			is_assignment = false;
 
-			int j;
+			size_t j;
 			for (j = int_declare_len - 1; j < len; ++j) {
 				if (current_statement[j] != ' ') {
 					break;
@@ -83,7 +83,7 @@ void parser(_memory *mem, const char *statement) {
 		// variable printing
 		const char print_declare1[] = "print ";
 		const char print_declare2[] = "print(";
-		const int print_declare_len = strlen(print_declare1);
+		const size_t print_declare_len = strlen(print_declare1);
 
 		if (string_startswith(current_statement, print_declare1) ||
 			string_startswith(current_statement, print_declare2)) {

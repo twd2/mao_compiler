@@ -75,7 +75,7 @@ _priority check_priority(char p1, char p2) {
 		}
 	case '=':
 		switch (p2) {
-		case '#':
+		case '#': case ')':
 			return HIGH;
 		default:
 			return LOW;
@@ -271,7 +271,7 @@ void convert(char *exp) {
 					strcat(ovs_str_new, ovs_str2);
 					strcat(ovs_str_new, ovs_str1);
 					strcat(ovs_str_new, ops_str);
-					stack_push_string(stack_ovs, ovs_str_new, strlen(ovs_str_new));
+					stack_push_string(stack_ovs, ovs_str_new);
 
 					free(ovs_str1);
 					free(ovs_str2);
@@ -301,7 +301,7 @@ void convert(char *exp) {
 		}
 		else if (exp[i] == ' ' && number_var_started) {
 			strcat(exp_tmp_str, " ");
-			stack_push_string(stack_ovs, exp_tmp_str, strlen(exp_tmp_str));
+			stack_push_string(stack_ovs, exp_tmp_str);
 			exp_tmp_str[0] = '\0';
 			number_var_started = false;
 		}
@@ -315,7 +315,7 @@ void convert(char *exp) {
 
 _variable calculate(_memory *mem, char *exp) {
 
-	int length = strlen(exp);
+	size_t length = strlen(exp);
 	bool number_started = false;
 	bool var_started = false;
 	bool is_double = false;
@@ -324,7 +324,7 @@ _variable calculate(_memory *mem, char *exp) {
 
 	_stack *stack_ovs = stack_new(1);
 
-	for (int i = 0; i < length; ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
 			_variable b = *(_variable *)(*(stack_top(stack_ovs)));
 			stack_pop_and_free(stack_ovs);
@@ -354,6 +354,8 @@ _variable calculate(_memory *mem, char *exp) {
 			stack_pop_and_free(stack_ovs);
 			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
 			set_variable(mem, var->name, constant);
+			stack_pop_and_free(stack_ovs);
+			stack_copy_and_push(stack_ovs, &constant, sizeof(constant));
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -392,9 +394,7 @@ _variable calculate(_memory *mem, char *exp) {
 				if (var->type == DOUBLE) {
 					is_double = true;
 				}
-				_variable *var_copied = (_variable *)malloc(sizeof(_variable));
-				*var_copied = *var;
-				stack_push(stack_ovs, var_copied);
+				stack_copy_and_push(stack_ovs, var, sizeof(*var));
 				var_started = false;
 			}
 			else if (number_started) {
@@ -419,7 +419,7 @@ _variable calculate(_memory *mem, char *exp) {
 	switch (result.type)
 	{
 	case INT:
-		result.int_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
+		result.int_value = (int)get_value(*(_variable *)(*(stack_top(stack_ovs))));
 		break;
 	case DOUBLE:
 		result.double_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));

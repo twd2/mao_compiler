@@ -29,6 +29,9 @@ void stack_pop(_stack *stack);
 // Function to push a new element to the top of the stack
 void stack_push(_stack *stack, void *data);
 
+// Function to push a new element copied from stack memory to heap memory to the top stack
+void stack_copy_and_push(_stack *stack, void *data, size_t size);
+
 // Function to push a string to the top of the stack
 void stack_push_string(_stack *stack, const char *str);
 
