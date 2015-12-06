@@ -16,11 +16,11 @@ void parser(_memory *mem, const char *statement) {
 	 */
 
 	_vector *vec_statement = vector_new(1);
-	size_t count = string_split(vec_statement, statement, ';');
+	int count = string_split(vec_statement, statement, ';');
 
 	char *current_statement = (char *)malloc(sizeof(char));
 
-	for (size_t i = 0; i < count; ++i) {
+	for (int i = 0; i < count; ++i) {
 
 		size_t len = strlen((char *)*vector_get(vec_statement, i));
 		current_statement = (char *)realloc(current_statement, sizeof(char) * (len + 1));
@@ -90,7 +90,7 @@ void parser(_memory *mem, const char *statement) {
 			// print statement
 			is_assignment = false;
 
-			size_t j;
+			int j;
 			for (j = print_declare_len - 1; j < len; ++j) {
 				if (current_statement[j] == ')') {
 					break;
