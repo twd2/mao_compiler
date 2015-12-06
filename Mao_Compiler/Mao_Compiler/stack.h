@@ -20,17 +20,20 @@ size_t stack_size(_stack *stack);
 // Function to get the top of the stack
 void **stack_top(_stack *stack);
 
+// Function to remove the top element of the stack and the value
+void stack_pop_and_free(_stack *stack);
+
 // Function to remove the top element of the stack
 void stack_pop(_stack *stack);
 
 // Function to push a new element to the top of the stack
-void stack_push(_stack *stack, void *data, size_t size);
-
-// Function to push a new constant to the top of the stack
-void stack_push_constant(_stack *stack, int var);
+void stack_push(_stack *stack, void *data);
 
 // Function to push a string to the top of the stack
 void stack_push_string(_stack *stack, const char *str);
+
+// Function to free a stack and its values
+void stack_deepfree(_stack *stack);
 
 // Function to deep free a stack
 void stack_free(_stack *stack);
