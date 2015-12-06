@@ -149,9 +149,7 @@ _variable *simple_calculate(char op, _variable a, _variable b) {
 			if (b.int_value == 0) {
 				result->type = ERRORVALUE;
 				result->int_value = DIVIDED_BY_ZERO;
-				printf("divided by ZERO\n");
-				exit(1);
-				break;
+				return result;
 			}
 			result->int_value = a.int_value / b.int_value;
 			break;
@@ -173,10 +171,8 @@ _variable *simple_calculate(char op, _variable a, _variable b) {
 		case '/':
 			if (fabs(get_value(b) - 0.0) <= 0.0000001) {
 				result->type = ERRORVALUE;
-				result->double_value = DIVIDED_BY_ZERO;
-				printf("divided by ZERO\n");
-				exit(1);
-				break;
+				result->int_value = DIVIDED_BY_ZERO;
+				return result;
 			}
 			result->double_value = get_value(a) / get_value(b);
 			break;
@@ -336,7 +332,7 @@ _variable calculate(_memory *mem, char *exp) {
 			stack_pop_and_free(stack_ovs);
 			_variable a = *(_variable *)(*(stack_top(stack_ovs)));
 			stack_pop_and_free(stack_ovs);
-			_variable *res = simple_calculate(exp[i], b, a);
+			_variable *res = simple_calculate(exp[i], a, b);
 			stack_push(stack_ovs, res);
 			if (res->type == ERRORVALUE) {
 				_variable result = *res;
@@ -390,11 +386,10 @@ _variable calculate(_memory *mem, char *exp) {
 			if (var_started) {
 				_variable *varptr = get_variable_by_name(mem, temp_string);
 				if (!varptr) {
-					printf("Using undefined variable %s\n", temp_string);
 					stack_deepfree(stack_ovs);
 					_variable result;
-					result.type = INT;
-					result.int_value = ERRORVALUE;
+					result.type = ERRORVALUE;
+					result.int_value = USED_BEFORE_DEFINE;
 					return result;
 				}
 				_variable var = *varptr;

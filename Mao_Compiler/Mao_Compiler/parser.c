@@ -100,6 +100,22 @@ void parser(_memory *mem, const char *statement) {
 			parse(temp_str);
 			convert(temp_str);
 			_variable var = calculate(mem, temp_str);
+			if (var.type == ERRORVALUE)
+			{
+				switch (var.int_value)
+				{
+				case DIVIDED_BY_ZERO:
+					printf("divided by ZERO\n");
+					break;
+				case USED_BEFORE_DEFINE:
+					printf("Using undefined variable\n");
+					break;
+				default:
+					printf("Unknown error\n");
+					break;
+				}
+				break;
+			}
 			print_variable(var);
 		}
 
@@ -108,7 +124,23 @@ void parser(_memory *mem, const char *statement) {
 			string_clearspace(current_statement);
 			parse(current_statement);
 			convert(current_statement);
-			calculate(mem, current_statement);
+			_variable var = calculate(mem, current_statement);
+			if (var.type == ERRORVALUE)
+			{
+				switch (var.int_value)
+				{
+				case DIVIDED_BY_ZERO:
+					printf("divided by ZERO\n");
+					break;
+				case USED_BEFORE_DEFINE:
+					printf("Using undefined variable\n");
+					break;
+				default:
+					printf("Unknown error\n");
+					break;
+				}
+				break;
+			}
 		}
 
 	}

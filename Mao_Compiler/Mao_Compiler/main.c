@@ -25,17 +25,17 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	//while (!feof(file_input)) {
-	//	fgets(command, 1005, file_input);
-	//	command[strlen(command) - 1] = '\0'; //remove last '\n'
-	//	parser(mem, command);
-	//}
-	//fclose(file_input);
+	while (!feof(file_input)) {
+		fgets(command, 1005, file_input);
+		command[strlen(command) - 1] = '\0'; //remove last '\n'
+		parser(mem, command);
+	}
+	fclose(file_input);
 	
 	parser(mem, "int a;");
 	while (1) {
 		parser(mem, "a = -1;");
-		parser(mem, "a = a + 1;");
+		parser(mem, "a = 1/0;");
 	}
 
 	return 0;

@@ -126,8 +126,6 @@ void print_variable(_variable var) {
 		printf("%lf\n", var.double_value);
 		break;
 	case ERRORVALUE:
-		printf("divided by ZERO\n");
-		exit(1);
 		break;
 	}
 	return;
