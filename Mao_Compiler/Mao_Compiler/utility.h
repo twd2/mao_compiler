@@ -27,7 +27,7 @@ char *string_purify(const char *str);
 // Function to delete all spaces in a string
 void string_clearspace(char *str);
 
-// Function to check whether a string starts with a specific string
-bool string_startswith(char *str, const char *start);
+// Function to check whether a string starts with a specific string ignoring leading spaces
+int string_startswith(char *str, const char *start);
 
 #endif

@@ -1,7 +1,7 @@
 #include "vector.h"
 #include "parser.h"
-#include "utility.h"
 #include "memory.h"
+#include "utility.h"
 #include "expression.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,12 +39,15 @@ void parser(_memory *mem, const char *statement) {
 		const size_t double_declare_len = strlen(double_declare);
 		const size_t int_declare_len = strlen(int_declare);
 
-		if (string_startswith(current_statement, double_declare)) {
+		int str_int_start_pos = string_startswith(current_statement, int_declare);
+		int str_double_start_pos = string_startswith(current_statement, double_declare);
+
+		if (str_double_start_pos != -1) {
 			// variable declared as a double
 			is_assignment = false;
 
 			size_t j;
-			for (j = double_declare_len - 1; j < len; ++j) {
+			for (j = str_double_start_pos + double_declare_len; j < len; ++j) {
 				if (current_statement[j] != ' ') {
 					break;
 				}
@@ -60,12 +63,12 @@ void parser(_memory *mem, const char *statement) {
 			vector_deepfree(vec_declare);
 		}
 
-		if (string_startswith(current_statement, int_declare)) {
+		if (str_int_start_pos != -1) {
 			// variable declared as a int
 			is_assignment = false;
 
 			size_t j;
-			for (j = int_declare_len - 1; j < len; ++j) {
+			for (j = str_int_start_pos + int_declare_len; j < len; ++j) {
 				if (current_statement[j] != ' ') {
 					break;
 				}
@@ -85,8 +88,8 @@ void parser(_memory *mem, const char *statement) {
 		const char print_declare2[] = "print(";
 		const size_t print_declare_len = strlen(print_declare1);
 
-		if (string_startswith(current_statement, print_declare1) ||
-			string_startswith(current_statement, print_declare2)) {
+		if (string_startswith(current_statement, print_declare1) != -1 ||
+			string_startswith(current_statement, print_declare2) != -1) {
 			// print statement
 			is_assignment = false;
 

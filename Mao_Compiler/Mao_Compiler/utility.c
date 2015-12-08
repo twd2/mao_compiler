@@ -77,16 +77,27 @@ void string_clearspace(char *str) {
 	return;
 }
 
-bool string_startswith(char *str, const char *start)
-{
+int string_startswith(char *str, const char *start) {
 	int len_str = strlen(str), len_start = strlen(start);
 	if (len_str < len_start) {
-		return false;
+		return -1;
 	}
 	char *temp = (char *)malloc((len_start + 1) * sizeof(char));
-	bool result = false;
-	string_sub(temp, str, 0, len_start);
-	result = strcmp(temp, start) == 0;
+	int position = -1;
+	for (int i = 0; i <= len_str - len_start; ++i) {
+		if (position != -1) {
+			break;
+		}
+		if (i == 0 || str[i - 1] == ' ') {
+			string_sub(temp, str, i, len_start);
+			if (!strcmp(temp, start)) {
+				position = i;
+			}
+		}
+		else {
+			break;
+		}
+	}
 	free(temp);
-	return result;
+	return position;
 }
