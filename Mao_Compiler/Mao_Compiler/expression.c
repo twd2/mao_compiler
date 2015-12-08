@@ -1,11 +1,11 @@
 #include "stack.h"
 #include "utility.h"
 #include "expression.h"
+#include <math.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 extern unsigned int error;
 
@@ -75,7 +75,7 @@ _priority check_priority(char p1, char p2) {
 		}
 	case '=':
 		switch (p2) {
-		case '#':
+		case '#': case ')':
 			return HIGH;
 		default:
 			return LOW;
@@ -354,6 +354,8 @@ _variable calculate(_memory *mem, char *exp) {
 			stack_pop_and_free(stack_ovs);
 			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
 			set_variable(mem, var->name, constant);
+			stack_pop_and_free(stack_ovs);
+			stack_copy_and_push(stack_ovs, &constant, sizeof(constant));
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -392,9 +394,7 @@ _variable calculate(_memory *mem, char *exp) {
 				if (var->type == DOUBLE) {
 					is_double = true;
 				}
-				_variable *var_copied = (_variable *)malloc(sizeof(_variable));
-				*var_copied = *var;
-				stack_push(stack_ovs, var_copied);
+				stack_copy_and_push(stack_ovs, var, sizeof(*var));
 				var_started = false;
 			}
 			else if (number_started) {

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "utility.h"
 
 int main(int argc, char *argv[]) {
 
@@ -33,11 +34,15 @@ int main(int argc, char *argv[]) {
 	}
 	fclose(file_input);
 	
-	parser(mem, "int a;");
-	while (1) {
+	/* test for memory leaking:
+
+	 parser(mem, "int a;");
+	 while (1) {
 		parser(mem, "a = -1;");
 		parser(mem, "a = 1/0;");
-	}
+	 }
+
+	 */
 
 	return 0;
 }
