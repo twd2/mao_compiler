@@ -1,15 +1,16 @@
 #include "parser.h"
+#include "utility.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "utility.h"
+#include <stdbool.h>
 
 int main(int argc, char *argv[]) {
 
 	_memory *mem = create_memory();
 
 	if (!mem) {
-		fprintf(stderr, "Bad alloc.\n");
+		fprintf(stderr, "Bad alloc\n");
 		return 1;
 	}
 
@@ -23,12 +24,15 @@ int main(int argc, char *argv[]) {
 	}
 
 	if (!file_input) {
-		fprintf(stderr, "Source file open error.\n");
+		fprintf(stderr, "Source file open error\n");
 		return 1;
 	}
 
-	while (!feof(file_input)) {
+	while (true) {
 		fgets(command, 1005, file_input);
+		if (feof(file_input)) {
+			break;
+		}
 		command[strlen(command) - 1] = '\0'; //remove last '\n'
 		parser(mem, command);
 	}

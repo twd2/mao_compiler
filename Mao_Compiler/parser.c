@@ -3,7 +3,6 @@
 #include "memory.h"
 #include "utility.h"
 #include "expression.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -134,6 +133,7 @@ void catch_error(int error_code) {
 	switch (error_code) {
 	case DIVIDED_BY_ZERO:
 		printf("divided by ZERO\n");
+		exit(0);
 		break;
 	case USED_BEFORE_DEFINE:
 		printf("Using undefined variable\n");

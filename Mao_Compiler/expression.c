@@ -3,7 +3,6 @@
 #include "expression.h"
 #include <math.h>
 #include <ctype.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -19,6 +18,7 @@ _priority check_priority(char p1, char p2) {
 		case '+': case '-': case ')': case '#':
 			return HIGH;
 		case '*': case '/': case '(': case '$':
+		case '~':
 			return LOW;
 		case '=': default:
 			return ERROR;
@@ -29,7 +29,7 @@ _priority check_priority(char p1, char p2) {
 		case '+': case '-': case '*': case '/':
 		case ')': case '#':
 			return HIGH;
-		case '(': case '$':
+		case '(': case '$': case '~':
 			return LOW;
 		case '=': default:
 			return ERROR;
@@ -38,7 +38,7 @@ _priority check_priority(char p1, char p2) {
 	case '(':
 		switch (p2) {
 		case '+': case '-': case '*': case '/':
-		case '(': case '$': case '=':
+		case '(': case '$': case '=': case '~':
 			return LOW;
 		case ')':
 			return SAME;
@@ -51,14 +51,15 @@ _priority check_priority(char p1, char p2) {
 		case '+': case '-': case '*': case '/':
 		case ')': case '#':
 			return HIGH;
-		case '$': case '=': case '(': default:
+		case '$': case '=': case '(': case '~':
+		default:
 			return ERROR;
 		}
 		break;
 	case '#':
 		switch (p2) {
 		case '+': case '-': case '*': case '/':
-		case '(': case '$': case '=':
+		case '(': case '$': case '=': case '~':
 			return LOW;
 		case '#':
 			return SAME;
@@ -67,6 +68,13 @@ _priority check_priority(char p1, char p2) {
 		}
 		break;
 	case '$':
+		switch (p2) {
+		case '=':
+			return ERROR;
+		default:
+			return HIGH;
+		}
+	case '~':
 		switch (p2) {
 		case '=':
 			return ERROR;
@@ -184,15 +192,16 @@ void parse(char *exp) {
 	int i = 0;
 	bool number_var_started = false;
 	while (exp[i] != '@') {
-		if (exp[i] == '-') {
-			/* how to judge negative sign:
-			 * (1) '(' before this character - negative sign;
-			 * (2) ')' or numbers before this character - minus sign;
-			 * (3) other optional character before this character - negative sign;
-			 * (4) this character is the first - negative sign.
+		if (exp[i] == '-' || exp[i] == '+') {
+			/*
+			 * how to judge negative and positive sign:
+			 * (1) '(' before this character - negative/positive sign;
+			 * (2) ')' or numbers before this character - minus/plus sign;
+			 * (3) other optional character before this character - negative/positive sign;
+			 * (4) this character is the first - negative/positive sign.
 			 *
-			 * special process with negative sign:
-			 *  - change the minus sign to another new sign '$';
+			 * special process with negative and positive sign:
+			 *  - change the minus sign to another new sign '$', the plus sign to '~';
 			 *  - change the priority of the new sign to the highest;
 			 *  - when calculate the new sign:
 			 *     * push back the opt '$';
@@ -202,7 +211,7 @@ void parse(char *exp) {
 				exp[i - 1] == '+' || exp[i - 1] == '-' ||
 				exp[i - 1] == '*' || exp[i - 1] == '/' ||
 				exp[i - 1] == '=') {
-				string_replace(exp, '$', i);
+				string_replace(exp, exp[i] == '-' ? '$' : '~', i);
 			}
 		}
 		if (is_number(exp[i]) || isalpha(exp[i]) || exp[i] == '.') {
@@ -233,7 +242,10 @@ void convert(char *exp) {
 		if (exp[i] == '@') {
 			break;
 		}
-		if (is_operator(exp[i]) || exp[i] == '$' || exp[i] == '=') {
+		if (is_operator(exp[i]) ||
+			exp[i] == '$' ||
+			exp[i] == '~' ||
+			exp[i] == '=') {
 			char stack_top_char = (char)(*stack_top(stack_ops));
 			if (check_priority(stack_top_char, exp[i]) == ERROR) {
 				error = LOGIC_ERROR;
@@ -245,7 +257,7 @@ void convert(char *exp) {
 				ops_str[1] = '\0';
 				stack_pop(stack_ops);
 
-				if (stack_top_char == '$') {
+				if (stack_top_char == '$' || stack_top_char == '~') {
 					size_t ovs_str_len = strlen((char *)(*stack_top(stack_ovs)));
 					char *ovs_str = (char *)malloc((ovs_str_len + 2 + 1) * sizeof(char));
 					strcpy(ovs_str, (char *)(*stack_top(stack_ovs)));
@@ -347,6 +359,17 @@ _variable calculate(_memory *mem, char *exp) {
 			zero.int_value = 0;
 			zero.is_constant = true;
 			_variable *res = simple_calculate('-', zero, var);
+			stack_push(stack_ovs, res);
+		}
+		else if (exp[i] == '~') {
+			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
+			stack_pop_and_free(stack_ovs);
+			_variable zero;
+			zero.type = var.type;
+			zero.double_value = 0;
+			zero.int_value = 0;
+			zero.is_constant = true;
+			_variable *res = simple_calculate('+', zero, var);
 			stack_push(stack_ovs, res);
 		}
 		else if (exp[i] == '=') {
