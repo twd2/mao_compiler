@@ -1,5 +1,4 @@
 #include "stack.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -43,7 +42,7 @@ void stack_pop(_stack *stack) {
 void stack_push(_stack *stack, void *data) {
 	if (stack->size == stack->capacity) {
 		stack->capacity *= 2;
-		stack->data = (void **) realloc(stack->data, stack->capacity * sizeof(void *));
+		stack->data = (void **)realloc(stack->data, stack->capacity * sizeof(void *));
 	}
 
 	stack->data[stack->size] = data;

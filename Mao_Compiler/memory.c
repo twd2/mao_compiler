@@ -3,10 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Todo: try Hash to avoid visit through the linked list
-
-//_memory *p_head = NULL;
-
 unsigned int error = NO_ERROR;
 
 _memory *create_memory(void) {
