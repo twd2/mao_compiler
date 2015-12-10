@@ -8,7 +8,7 @@ SXKDZ Mao Interpreter is written in C completely. The first version of SMC is a 
 
 ## Features
 * Cross-platform
-* Implement stack and vector class of C++ STL in C
+* Implement stack and vector in C
 * Dynamic memory allocating, for optimized memory using
 * Intelligent error catching
 
@@ -23,11 +23,11 @@ SXKDZ Mao Interpreter is written in C completely. The first version of SMC is a 
 ## Using
 for standard input / output:
 
-	./Mao_Compiler
+	./Mao_Interpreter
 
 for file input:
 
-	./Mao_Compiler Source.mao
+	./Mao_Interpreter Source.mao
 
 ## License
 GPL v3
