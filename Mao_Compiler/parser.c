@@ -3,6 +3,7 @@
 #include "memory.h"
 #include "utility.h"
 #include "expression.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -14,7 +15,7 @@ void parser(_memory *mem, const char *statement) {
 	 * (3) variable assignment
 	 */
 
-	_vector *vec_statement = vector_new(1);
+	_vector *vec_statement = vector_new(8);
 	int count = string_split(vec_statement, statement, ';');
 
 	char *current_statement = (char *)malloc(sizeof(char));

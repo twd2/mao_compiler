@@ -17,3 +17,8 @@ obj
 *.psess
 *.DS_Store
 .DS_Store
+Makefile
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles
+

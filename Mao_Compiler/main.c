@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	char command[1005];
+	char command[1005]; // enough?
 	FILE *file_input = NULL;
 	if (argc > 1) {
 		file_input = fopen(argv[1], "r");

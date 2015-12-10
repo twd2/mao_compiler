@@ -33,7 +33,7 @@ void string_insert(char *_des, const char *_src, const unsigned int _pos) {
 }
 
 void string_sub(char *_des, const char *_src, const unsigned int _pos, const unsigned int _len) {
-	char *p_source = _src + _pos;
+	const char *p_source = _src + _pos;
 	for (int i = 0; i < _len; ++i) {
 		_des[i] = *(p_source++);
 	}
