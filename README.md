@@ -8,7 +8,7 @@ SXKDZ Mao Compiler is written in C completely. The first version of SMC is a sim
 
 ## Features
 * Cross-platform
-* Implement stack and vector class of C++ STL in C
+* Implement stack and vector in C
 * Dynamic memory allocating, for optimized memory using
 * Intelligent error catching
 
