@@ -6,6 +6,8 @@
 #include "memory.h"
 #include <stdbool.h>
 
+extern unsigned int error;
+
 extern const char OPERATIONS[];
 extern const char NUMBERS[];
 

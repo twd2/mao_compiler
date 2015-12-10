@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * BIG TO DO(twd2): USE MAP!!!
+ */
+
 unsigned int error = NO_ERROR;
 
 _memory *create_memory(void) {
@@ -143,6 +147,7 @@ void assign_variable(_variable *_destination, const _variable *_source) {
 	_destination->type = _source->type;
 	switch (_destination->type) {
 	case INT:
+	case ERRORVALUE:
 		_destination->int_value = _source->int_value;
 		break;
 	case DOUBLE:

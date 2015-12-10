@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern unsigned int error;
+unsigned int error;
 
 const char OPERATIONS[] = { '+', '-', '*', '/', '#', '(', ')' };
 const char NUMBERS[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -120,21 +120,27 @@ double get_value(_variable var) {
 }
 
 bool is_operator(char ch) {
-	for (int i = 0; i < sizeof(OPERATIONS) / sizeof(*OPERATIONS); ++i) {
-		if (OPERATIONS[i] == ch) {
-			return true;
+	static bool _inited = false;
+	static bool _is_operator[256] = {0};
+	if (!_inited) {
+		for (int i = 0; i < sizeof(OPERATIONS) / sizeof(*OPERATIONS); ++i) {
+			_is_operator[OPERATIONS[i]] = true;
 		}
+		_inited = true;
 	}
-	return false;
+	return _is_operator[ch];
 }
 
 bool is_number(char ch) {
-	for (int i = 0; i < sizeof(NUMBERS) / sizeof(*NUMBERS); ++i) {
-		if (NUMBERS[i] == ch) {
-			return true;
+	static bool _inited = false;
+	static bool _is_number[256] = {0};
+	if (!_inited) {
+		for (int i = 0; i < sizeof(NUMBERS) / sizeof(*NUMBERS); ++i) {
+			_is_number[NUMBERS[i]] = true;
 		}
+		_inited = true;
 	}
-	return false;
+	return _is_number[ch];
 }
 
 _variable *simple_calculate(char op, _variable a, _variable b) {
@@ -230,8 +236,8 @@ void parse(char *exp) {
 
 void convert(char *exp) {
 
-	_stack *stack_ops = stack_new(1); // stores char
-	_stack *stack_ovs = stack_new(1); // stores string
+	_stack *stack_ops = stack_new(8); // stores char
+	_stack *stack_ovs = stack_new(8); // stores string(char *)
 	stack_push(stack_ops, (void *)'#');
 
 	size_t length = strlen(exp);
@@ -446,6 +452,9 @@ _variable calculate(_memory *mem, char *exp) {
 		break;
 	case DOUBLE:
 		result.double_value = get_value(*(_variable *)(*(stack_top(stack_ovs))));
+		break;
+	case ERRORVALUE:
+		//shouldn't reach here
 		break;
 	}
 	stack_deepfree(stack_ovs);
