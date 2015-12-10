@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(Mao_Compiler)
+project(Mao_Interpreter)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -O2")
 
@@ -12,4 +12,4 @@ set(SOURCE_FILES
         utility.h utility.c
         vector.h vector.c)
 
-add_executable(Mao_Compiler ${SOURCE_FILES})
+add_executable(Mao_Interpreter ${SOURCE_FILES})
