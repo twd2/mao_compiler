@@ -12,4 +12,4 @@ set(SOURCE_FILES
         utility.h utility.c
         vector.h vector.c)
 
-add_executable(Mao_Interpreter ${SOURCE_FILES})
+add_executable(smi ${SOURCE_FILES})

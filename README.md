@@ -16,18 +16,24 @@ SXKDZ Mao Interpreter is written in C completely. The first version of SMC is a 
 * CMake (version >= 3.0)
 * gcc (version >= 4.8.3)
 
-## Compiling
-	CMake .
-	make
+## Building
+``` bash
+cmake .
+make
+```
 
-## Using
+## Usage
 for standard input / output:
 
-	./Mao_Interpreter
+``` bash
+./smi
+```
 
 for file input:
 
-	./Mao_Interpreter Source.mao
+``` bash
+./smi source.mao
+```
 
 ## License
 GPL v3
