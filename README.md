@@ -8,13 +8,13 @@ SXKDZ Mao Interpreter is written in C completely. The first version of SMC is a 
 
 ## Features
 * Cross-platform
-* Implement stack and vector in C
+* Implement stack, vector and map in C
 * Dynamic memory allocating, for optimized memory using
 * Intelligent error catching
 
 ## Requirments
 * CMake (version >= 3.0)
-* gcc (version >= 4.8.3)
+* gcc (version >= 4.8.0)
 
 ## Building
 ``` bash
