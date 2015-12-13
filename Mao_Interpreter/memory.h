@@ -3,17 +3,17 @@
 #ifndef _MEMORY_H
 #define _MEMORY_H
 
-#include <stdbool.h>
 #include "map.h"
+#include <stdbool.h>
 
-#define NO_ERROR           0x00
-#define MATCH_ERROR        0x01
-#define MALLOC_ERROR       0x02
-#define MEMORY_EMPTY       0x03
-#define LOGIC_ERROR        0x04
-#define DIVIDED_BY_ZERO    0x05
-#define USED_BEFORE_DEFINE 0x06
-#define VAR_REDEFINE           0x07
+#define NO_ERROR			0x00
+#define MATCH_ERROR			0x01
+#define MALLOC_ERROR		0x02
+#define MEMORY_EMPTY		0x03
+#define LOGIC_ERROR			0x04
+#define DIVIDED_BY_ZERO		0x05
+#define USED_BEFORE_DEFINE	0x06
+#define VAR_REDEFINE		0x07
 
 typedef enum { INT, DOUBLE, ERRORVALUE } _type;
 

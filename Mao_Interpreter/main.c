@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[]) {
 
-	_map *mem = map_new();
+	_map *mem = map_new_node();
 
 	if (!mem) {
 		fprintf(stderr, "Bad alloc\n");
@@ -42,13 +42,11 @@ int main(int argc, char *argv[]) {
 
 	//char stat[10000] = "";
 
-	//while (1)
-	//{
+	//while (1) {
 	//	map_deepfree(mem);
-	//	mem = map_new();
+	//	mem = map_new_node();
 
-	//	for (int i = 0; i < 100000; ++i)
-	//	{
+	//	for (int i = 0; i < 100000; ++i) {
 	//		sprintf(stat, "int a%d;", i);
 	//		parser(mem, stat);
 	//	}
@@ -57,6 +55,8 @@ int main(int argc, char *argv[]) {
 
 	//	parser(mem, "a = -1;");
 	//	parser(mem, "b = +1.0;");
+
+	//	parser(mem, "print(a0);");
 	//	//parser(mem, "a = 1/0;");
 	//}
 	

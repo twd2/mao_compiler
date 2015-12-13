@@ -13,9 +13,9 @@ void add_int_variable(_map *mem, char *_name, int _value) {
 		var->type = INT;
 		var->is_constant = false;
 		strcpy(var->name, _name);
-		void **old_var_ptr;
+		void **p_old_var;
 		_variable *old_var;
-		if ((old_var_ptr = map_get(mem, _name)) && (old_var = (_variable *)*old_var_ptr)) {
+		if ((p_old_var = map_get(mem, _name)) && (old_var = (_variable *)*p_old_var)) {
 			free(var);
 			error = VAR_REDEFINE;
 			return;
@@ -37,9 +37,9 @@ void add_double_variable(_map *mem, char *_name, double _value) {
 		var->type = DOUBLE;
 		var->is_constant = false;
 		strcpy(var->name, _name);
-		void **old_var_ptr;
+		void **p_old_var;
 		_variable *old_var;
-		if ((old_var_ptr = map_get(mem, _name)) && (old_var = (_variable *)*old_var_ptr)) {
+		if ((p_old_var = map_get(mem, _name)) && (old_var = (_variable *)*p_old_var)) {
 			free(var);
 			error = VAR_REDEFINE;
 			return;
@@ -72,10 +72,10 @@ void set_variable(_map *mem, char *_name, _variable _var) {
 }
 
 _variable *get_variable_by_name(_map *mem, char *_name) {
-	void **var_ptr;
-	var_ptr = map_get(mem, _name);
-	if (var_ptr) {
-		return (_variable *)*var_ptr;
+	void **p_var;
+	p_var = map_get(mem, _name);
+	if (p_var) {
+		return (_variable *)*p_var;
 	}
 	else {
 		return NULL;
