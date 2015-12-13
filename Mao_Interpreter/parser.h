@@ -6,7 +6,7 @@
 #include "memory.h"
 
 // Function to parse a statement
-void parser(_memory *mem, const char *statement);
+void parser(_map *mem, const char *statement);
 
 // Function to catch error
 void catch_error(int error_no);

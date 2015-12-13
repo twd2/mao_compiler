@@ -41,6 +41,6 @@ void parse(char *exp);
 void convert(char *exp);
 
 // Function to calculate a postfix expression
-_variable calculate(_memory *mem, char *exp);
+_variable calculate(_map *mem, char *exp);
 
 #endif
