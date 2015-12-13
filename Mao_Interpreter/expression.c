@@ -331,7 +331,7 @@ void convert(char *exp) {
 	return;
 }
 
-_variable calculate(_memory *mem, char *exp) {
+_variable calculate(_map *mem, char *exp) {
 
 	size_t length = strlen(exp);
 	bool number_started = false;

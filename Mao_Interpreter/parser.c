@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void parser(_memory *mem, const char *statement) {
+void parser(_map *mem, const char *statement) {
 	/*
 	 * there're three occasions:
 	 * (1) variable declaration
@@ -53,7 +53,7 @@ void parser(_memory *mem, const char *statement) {
 				}
 			}
 			string_sub(temp_str, current_statement, j, len);
-			_vector *vec_declare = vector_new(1);
+			_vector *vec_declare = vector_new(8);
 			int count = string_split(vec_declare, temp_str, ',');
 			for (j = 0; j < count; ++j) {
 				char *name_purified = string_purify((char *)(*vector_get(vec_declare, j)));
@@ -74,13 +74,14 @@ void parser(_memory *mem, const char *statement) {
 				}
 			}
 			string_sub(temp_str, current_statement, j, len);
-			_vector *vec_declare = vector_new(1);
+			_vector *vec_declare = vector_new(8);
 			int count = string_split(vec_declare, temp_str, ',');
 			for (j = 0; j < count; ++j) {
 				char *name_purified = string_purify((char *)(*vector_get(vec_declare, j)));
 				add_int_variable(mem, name_purified, 0);
 				free(name_purified);
 			}
+			vector_deepfree(vec_declare);
 		}
 
 		// variable printing
@@ -107,7 +108,7 @@ void parser(_memory *mem, const char *statement) {
 				catch_error(var.int_value);
 				break;
 			}
-			print_variable(var);
+			print_variable(&var);
 		}
 
 		// variable assignment
