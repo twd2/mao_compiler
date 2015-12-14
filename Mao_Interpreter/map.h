@@ -1,26 +1,33 @@
 #pragma once
 
-#ifndef MAP_H
-#define MAP_H
+#ifndef _MAP_H
+#define _MAP_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 
-struct _map;
-typedef struct _map _map;
-struct _map
-{
+typedef struct _map {
 	void *value;
-	_map *subNodes[256];
-};
+	struct _map *sub_nodes[256];
+} _map;
 
-_map *map_node_new();
-_map *map_new();
-void map_newSubNode(_map* node, char key);
-void map_add(_map* node, const char *str, void *value);
-void** map_get(_map* node, const char *str);
+// Function to add a new node to the map or create a new map
+_map *map_new_node(void);
+
+// Function to add a new subnode to the map
+void map_new_subnode(_map *node, char key);
+
+// Function to add a string with it's paired value to the map
+void map_add(_map *node, const char *str, void *value);
+
+// Function to get a value in corresponding with the string
+void **map_get(_map *node, const char *str);
+
+// Function to free a map preserving the value
 void map_free(_map *node);
+
+// Function to free a map completely
 void map_deepfree(_map *node);
 
-#endif //MAP_H
+#endif
