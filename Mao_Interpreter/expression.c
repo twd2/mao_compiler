@@ -423,7 +423,9 @@ _variable calculate(_map *mem, char *exp) {
 				if (var->type == DOUBLE) {
 					is_double = true;
 				}
-				stack_copy_and_push(stack_ovs, var, sizeof(*var));
+				stack_copy_and_push(stack_ovs, var,
+					sizeof(*var) + sizeof(char) * (strlen(temp_string) + 1));
+
 				var_started = false;
 			}
 			else if (number_started) {

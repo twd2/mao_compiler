@@ -6,8 +6,10 @@
 unsigned int error = NO_ERROR;
 
 void add_int_variable(_map *mem, char *_name, int _value) {
-	//                                                       variable length name
-	_variable *var = (_variable *)malloc(sizeof(_variable) + (strlen(_name) + 1));
+	_variable *var = (_variable *)malloc(sizeof(_variable)
+		+ (strlen(_name) + 1) * sizeof(char));
+	//	variable length name
+
 	if (var) {
 		var->int_value = _value;
 		var->type = INT;
@@ -30,8 +32,10 @@ void add_int_variable(_map *mem, char *_name, int _value) {
 }
 
 void add_double_variable(_map *mem, char *_name, double _value) {
-	//                                                       variable length name
-	_variable *var = (_variable *)malloc(sizeof(_variable) + (strlen(_name) + 1));
+	_variable *var = (_variable *)malloc(sizeof(_variable)
+		+ (strlen(_name) + 1) * sizeof(char));
+	//	variable length name
+
 	if (var) {
 		var->double_value = _value;
 		var->type = DOUBLE;
