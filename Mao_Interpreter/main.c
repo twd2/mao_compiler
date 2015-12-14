@@ -28,12 +28,23 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	while (true) {
+	while (!feof(file_input)) {
+		command[0] = '\0';
 		fgets(command, 1005, file_input);
-		if (feof(file_input)) {
+
+		int len = strlen(command);
+		if (len <= 0) {
 			break;
 		}
-		command[strlen(command) - 1] = '\0'; //remove last '\n'
+		
+		if (len - 2 >= 0 && command[len - 2] == '\r') {
+			command[len - 2] = '\0';
+		}
+		
+		if (len - 1 >= 0 && command[len - 1] == '\n') {
+			command[len - 1] = '\0';
+		}
+		
 		parser(mem, command);
 	}
 	fclose(file_input);
