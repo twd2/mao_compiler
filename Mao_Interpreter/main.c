@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 	//	mem = map_new_node();
 
 	//	for (int i = 0; i < 100000; ++i) {
-	//		sprintf(stat, "int a%d;", i);
+	//		sprintf(stat, "int a%d;    double b%d;", i, i);
 	//		parser(mem, stat);
 	//	}
 	//	parser(mem, "int a;");

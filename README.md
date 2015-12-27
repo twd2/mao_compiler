@@ -17,6 +17,23 @@ SXKDZ Mao Interpreter is written in C completely. The first version of SMC is a 
 * gcc (version >= 4.8.0)
 
 ## Building
+for 32-bits compiling:
+
+you need install ```libc6-dev-i386``` at first
+
+```bash
+sudo apt-get install libc6-dev-i386
+```
+
+after installing:
+
+```bash
+cmake . -DUSE_32BITS=1
+make
+```
+
+for 64-bits compiling:
+
 ``` bash
 cmake .
 make
