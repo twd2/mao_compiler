@@ -101,6 +101,7 @@ void parser(_map *mem, const char *statement) {
 				}
 			}
 			string_sub(temp_str, current_statement, print_declare_len, j - print_declare_len);
+			string_clearspace(temp_str);
 			parse(temp_str);
 			convert(temp_str);
 			_variable var = calculate(mem, temp_str);
