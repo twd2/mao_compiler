@@ -216,7 +216,8 @@ void parse(char *exp) {
 			if (i == 0 || exp[i - 1] == '(' ||
 				exp[i - 1] == '+' || exp[i - 1] == '-' ||
 				exp[i - 1] == '*' || exp[i - 1] == '/' ||
-				exp[i - 1] == '=') {
+				exp[i - 1] == '=' || exp[i - 1] == '$' ||
+				exp[i - 1] == '~') {
 				string_replace(exp, exp[i] == '-' ? '$' : '~', i);
 			}
 		}
@@ -357,34 +358,26 @@ _variable calculate(_map *mem, char *exp) {
 			}
 		}
 		else if (exp[i] == '$') {
-			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
-			stack_pop_and_free(stack_ovs);
-			_variable zero;
-			zero.type = var.type;
-			zero.double_value = 0;
-			zero.int_value = 0;
-			zero.is_constant = true;
-			_variable *res = simple_calculate('-', zero, var);
-			stack_push(stack_ovs, res);
+			// nothing need to be done
 		}
 		else if (exp[i] == '~') {
-			_variable var = *(_variable *)(*(stack_top(stack_ovs)));
-			stack_pop_and_free(stack_ovs);
-			_variable zero;
-			zero.type = var.type;
-			zero.double_value = 0;
-			zero.int_value = 0;
-			zero.is_constant = true;
-			_variable *res = simple_calculate('+', zero, var);
-			stack_push(stack_ovs, res);
+			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
+			var->int_value = -var->int_value;
+			var->double_value = -var->double_value;
 		}
 		else if (exp[i] == '=') {
-			_variable constant = *(_variable *)(*(stack_top(stack_ovs)));
-			stack_pop_and_free(stack_ovs);
-			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
-			set_variable(mem, var->name, constant);
-			stack_pop_and_free(stack_ovs);
-			stack_copy_and_push(stack_ovs, &constant, sizeof(constant));
+			_variable rvalue = *(_variable *)(*(stack_top(stack_ovs)));
+			if (rvalue.is_constant) {
+				stack_pop_and_free(stack_ovs);
+			}
+			else {
+				stack_pop(stack_ovs);
+			}
+			_variable *lvalue = (_variable *)(*(stack_top(stack_ovs)));
+			set_variable(mem, lvalue->name, rvalue);
+			
+			//stack_pop_and_free(stack_ovs);
+			//stack_copy_and_push(stack_ovs, &constant, sizeof(constant));
 		}
 		else if (isalpha(exp[i])) {
 			// pharse variable's name
@@ -423,9 +416,9 @@ _variable calculate(_map *mem, char *exp) {
 				if (var->type == DOUBLE) {
 					is_double = true;
 				}
-				stack_copy_and_push(stack_ovs, var,
-					sizeof(*var) + sizeof(char) * (strlen(temp_string) + 1));
-
+				//stack_copy_and_push(stack_ovs, var,
+				//	sizeof(*var) + sizeof(char) * (strlen(temp_string) + 1));
+				stack_push(stack_ovs, var);
 				var_started = false;
 			}
 			else if (number_started) {
@@ -459,6 +452,7 @@ _variable calculate(_map *mem, char *exp) {
 		//shouldn't reach here
 		break;
 	}
+	stack_pop(stack_ovs);
 	stack_deepfree(stack_ovs);
 	return result;
 }
