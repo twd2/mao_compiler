@@ -346,9 +346,19 @@ _variable calculate(_map *mem, char *exp) {
 	for (size_t i = 0; i < length; ++i) {
 		if (is_operator(exp[i])) {
 			_variable b = *(_variable *)(*(stack_top(stack_ovs)));
-			stack_pop_and_free(stack_ovs);
+			if (b.is_constant) {
+				stack_pop_and_free(stack_ovs);
+			}
+			else {
+				stack_pop(stack_ovs);
+			}
 			_variable a = *(_variable *)(*(stack_top(stack_ovs)));
-			stack_pop_and_free(stack_ovs);
+			if (a.is_constant) {
+				stack_pop_and_free(stack_ovs);
+			}
+			else {
+				stack_pop(stack_ovs);
+			}
 			_variable *res = simple_calculate(exp[i], a, b);
 			stack_push(stack_ovs, res);
 			if (res->type == ERRORVALUE) {
@@ -452,7 +462,14 @@ _variable calculate(_map *mem, char *exp) {
 		//shouldn't reach here
 		break;
 	}
-	stack_pop(stack_ovs);
+
+	_variable *ovs_top = (_variable *)(*(stack_top(stack_ovs)));
+	if (ovs_top->is_constant) {
+		stack_pop_and_free(stack_ovs);
+	}
+	else {
+		stack_pop(stack_ovs);
+	}
 	stack_deepfree(stack_ovs);
 	return result;
 }
