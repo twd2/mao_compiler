@@ -368,12 +368,23 @@ _variable calculate(_map *mem, char *exp) {
 			}
 		}
 		else if (exp[i] == '$') {
-			// nothing need to be done
+			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
+			if (var->is_constant) {
+				var->int_value = -var->int_value;
+				var->double_value = -var->double_value;
+			}
+			else {
+				stack_pop(stack_ovs);
+				_variable *var_copied = (_variable *)malloc(sizeof(_variable));
+				var_copied->double_value = -var->double_value;
+				var_copied->int_value = -var->int_value;
+				var_copied->is_constant = true;
+				var_copied->type = var->type;
+				stack_push(stack_ovs, var_copied);
+			}
 		}
 		else if (exp[i] == '~') {
-			_variable *var = (_variable *)(*(stack_top(stack_ovs)));
-			var->int_value = -var->int_value;
-			var->double_value = -var->double_value;
+			// nothing need to be done
 		}
 		else if (exp[i] == '=') {
 			_variable rvalue = *(_variable *)(*(stack_top(stack_ovs)));
